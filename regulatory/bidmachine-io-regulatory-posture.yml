@@ -1,0 +1,66 @@
+generated: '2026-09-19'
+method: searched
+probe: true
+description: >-
+  Horizontal regulatory-posture evidence BidMachine publishes, harvested only (which regimes apply is
+  decided by the Kin Score regime map, not here). Hunted in order: artifacts already harvested this run
+  (well-known/, security/, lifecycle/, conformance/), conventional legal paths on www.bidmachine.io and
+  www.bidmachine.com (the .io marketing paths 301 to .com), and the three docs hosts. Found: a public
+  Data Protection Addendum with a stated incident-notification period, a privacy-policy rights section
+  with a named DPO contact, and documented processing regions/data centers. Not found (all probed):
+  SBOM, VPAT/accessibility statement, subprocessor list (the "partners privacy policies" page is a
+  copy of the privacy policy, not a vendor table), GPC statement, training-data summary, AI
+  transparency page, DSA notice-and-action, transparency report, exit/export assistance, age assurance.
+probed:
+  - {url: https://www.bidmachine.com/dpa, status: 200, note: Privacy and Data Protection Addendum (Demand Partners C2C + Supply Partners), with PDF copies}
+  - {url: https://www.bidmachine.com/dpa-demand, status: 200}
+  - {url: https://www.bidmachine.com/privacy-policy, status: 200, note: last update posted Jan 26 2022; section 8 rights; children under 13/16 clause}
+  - {url: https://www.bidmachine.com/ccpa-privacy-policy, status: 200, note: no GPC / opt-out-preference-signal statement}
+  - {url: https://www.bidmachine.com/partners-privacy-policies, status: 200, note: body duplicates the privacy policy — no dated subprocessor/vendor table}
+  - {url: https://www.bidmachine.com/accessibility, status: 404}
+  - {url: https://www.bidmachine.com/legal/subprocessors, status: 404}
+  - {url: https://www.bidmachine.com/subprocessors, status: 404}
+  - {url: https://www.bidmachine.com/legal/dpa, status: 404}
+  - {url: https://www.bidmachine.com/security, status: 404}
+  - {url: https://www.bidmachine.com/trust, status: 404}
+  - {url: https://www.bidmachine.com/transparency, status: 404}
+  - {url: https://www.bidmachine.com/gdpr, status: 404}
+  - {url: https://www.bidmachine.io/.well-known/security.txt, status: 404}
+  - {url: https://developers.bidmachine.io/sdk/general/data-collection-practices, status: 200, note: COPPA/GDPR-restricted parameter table}
+  - {url: https://developers.bidmachine.io/dsp/requirements, status: 200, note: data centers Germany / US (Texas) / Singapore; GDPR DPA download}
+  - {url: https://developers.bidmachine.io/sdk/general/bidder, status: 200, note: regional auction endpoints EU/US/APAC}
+signals:
+  incident_notification:
+    url: https://www.bidmachine.com/dpa
+    stated_sla: 'within a reasonable time (72 hours)'
+    verbatim: >-
+      "Each party shall provide the other party prompt written notice, without undue delay and within the time frame
+      required by Applicable Data Protection Laws, if the notifying party knows or suspects that a security incident
+      has occurred with respect to the Personal Data within a reasonable time (72 hours)."
+    variants:
+      - {agreement: BidMachine Exchange DPA C2C (Demand Partners), stated_sla: 'within a reasonable time (72 hours)'}
+      - {agreement: BidMachine Exchange DPA C2C (Supply Side), stated_sla: 'within a reasonable time (24 hours)'}
+    documents:
+      - https://cdn.prod.website-files.com/687616911a76518b8c28e98a/6a7ae3f09c3ef020db157ff3_BidMachine_Exchange_DPA_C2C_Demand_Partners.pdf
+      - https://cdn.prod.website-files.com/687616911a76518b8c28e98a/68d1764da37599b0e34d6e9d_BidMachine_Exchange_DPA_C2C_Supply_Side.pdf
+    evidence: [{source: https://www.bidmachine.com/dpa, keywords: [security incidents, 72 hours, 24 hours, without undue delay, Standard Contractual Clauses]}]
+  data_subject_request:
+    url: https://www.bidmachine.com/privacy-policy
+    section: '8. Rights of Access, Rectification, Erasure, and Restriction'
+    contact: dpo@bidmachine.io
+    verbatim: >-
+      "You may ... use any of the methods set out in this Policy to request access to, receive (port), restrict
+      Processing, seek rectification, or request erasure of Personal Information held about you by BidMachine.
+      Such requests will be processed in line with local laws."
+    evidence: [{source: https://www.bidmachine.com/privacy-policy, keywords: [request access, port, rectification, erasure, restrict Processing, dpo@bidmachine.io]}]
+    note: A published rights process with a named DPO mailbox; no web form and no API.
+  data_residency:
+    url: https://developers.bidmachine.io/dsp/requirements
+    regions: [de, us, sg]
+    verbatim: '"BidMachine''s Data Centers are located in Germany, the US (Texas), and Singapore"'
+    detail:
+      - {source: https://developers.bidmachine.io/dsp/overview, text: 'ASIA-PACIFIC: Singapore; EUROPE: Falkenstein, Germany; US-EAST: New York, Washington; US-WEST: Dallas, Texas'}
+      - {source: https://developers.bidmachine.io/sdk/general/bidder, text: 'regional auction endpoints api-eu / api-us / api-apac.bidmachine.io'}
+      - {source: https://bidmachine.statuspage.io/, text: 'status components US (DFW), US (WAS), EU (AMS), APAC (SIN)'}
+    evidence: [{source: https://developers.bidmachine.io/dsp/requirements, keywords: [Data Centers, Germany, Texas, Singapore]}]
+    note: Published processing locations and per-region endpoints a partner chooses; not a customer-selectable storage-residency guarantee.

@@ -1,0 +1,50 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://bidmachine.statuspage.io/ (+ /api/v2/summary.json), https://developers.bidmachine.io/api/bidmachine-placement-management-api
+  (docs version switcher "v2.0 / v1.0 (Legacy)"), https://developers.bidmachine.io/sdk/general/android/android-changelog,
+  https://developers.bidmachine.io/sdk/general/unity/unity-changelog, https://docs.bidmachine.io/docs/reporting-api.md,
+  openapi/bidmachine-io-placement-management-openapi.yml, openapi/bidmachine-io-reporting-openapi.yml
+description: >-
+  Lifecycle signals for BidMachine's API and SDK surface. There is a public Atlassian Statuspage
+  (components: Public API, Dashboard, and the US (DFW), US (WAS), EU (AMS), APAC (SIN) regions).
+  The REST APIs are versioned in the URI path (/api/v1) and both published contracts are info.version
+  1.0.0; the developer portal carries a "v2.0" and "v1.0 (Legacy)" switch for the documentation set
+  (the legacy Reporting API page on docs.bidmachine.io still describes the same api-eu.bidmachine.io/api/v1
+  endpoint, which answers today). No deprecation policy, no Sunset/Deprecation header support, no SLA
+  and no public uptime target are published; SDK deprecations are announced in the SDK changelogs
+  only. No Deprecation pointer is emitted because there is no policy page to point at.
+versioning:
+  scheme: uri-path
+  current: v1 (path /api/v1; info.version 1.0.0 on both contracts)
+  docs: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+  notes: >-
+    Developer-portal docs versions: "v2.0" (current, developers.bidmachine.io) and "v1.0 (Legacy)"
+    (the ReadMe-hosted docs.bidmachine.io set, SDK 1.x/2.x era). The API path itself has not changed.
+deprecation:
+  policy_url: null
+  sunset_header: false
+  changelog: https://developers.bidmachine.io/sdk/general/android/android-changelog
+  notes: >-
+    SDK-level deprecations are announced inline in the changelogs (Android 3.7.0 deprecated
+    BidMachine.setUSPrivacyString(String) and BidMachine.setConsentConfig(Boolean, String); 3.5.0 deprecated
+    the BannerSize and AdsFormat enums and the no-arg BannerRequest.Builder(); Unity 3.6.0 deprecated the legacy
+    banner request APIs and IAdRequestListener and removed UserPermissions). The AdMob "Console Setup (Deprecated)"
+    docs page is the only deprecated documentation surface. No written policy or timeline commitment was found.
+sla:
+  url: null
+  public_uptime_target: null
+  notes: No SLA or uptime commitment is published; the Terms of Service (https://www.bidmachine.com/terms-of-service) carry no availability clause.
+status_page: https://bidmachine.statuspage.io/
+status_page_api: https://bidmachine.statuspage.io/api/v2/summary.json
+status_components: [Public API, Dashboard, US (DFW), US (WAS), EU (AMS), APAC (SIN)]
+support_lifetime:
+  stated_period: null
+  notes: >-
+    No support window is stated for SDK majors. Observed: iOS docs list Xcode minimums per SDK range back to 2.4.0.0,
+    and the legacy docs set is still served, but nothing commits to a period.
+deprecated_operations: []
+deprecated_products:
+  - name: Legacy SDK documentation set (docs.bidmachine.io, SDK 1.x/2.x)
+    superseded_by: developers.bidmachine.io (SDK 3.x, "v2.0" docs)
+    evidence: developer-portal version switcher labels the docs.bidmachine.io set "v1.0 (Legacy)"

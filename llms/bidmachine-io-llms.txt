@@ -1,0 +1,111 @@
+# BidMachine Developer Docs
+
+> Guides and references for BidMachine SDK, Reporting API, and more
+
+This file contains links to documentation sections following the llmstxt.org standard.
+
+## Table of Contents
+
+- [BidMachine Placement Management API](https://your-docusaurus-site.example.com/docs/api/bidmachine-placement-management-api.info): This API lets publishers create, list, update, and delete placements on their ad sources programmatically — without using the BidMachine dashboard....
+- [BidMachine Reporting API](https://your-docusaurus-site.example.com/docs/api/bidmachine-reporting-api.info): This API provides reporting data. Requirements:
+- [Create Placement](https://your-docusaurus-site.example.com/docs/api/create-placement.api): Creates a new placement on the given source. The placement `id` is generated server-side from the `name` and `bundle` fields — store it, you will n...
+- [Delete Placement](https://your-docusaurus-site.example.com/docs/api/delete-placement.api): Deletes the placement with the given `id` from the source.
+- [Get Access Token](https://your-docusaurus-site.example.com/docs/api/get-access-token.api): Returns a short-lived bearer token. Authenticate with HTTP Basic credentials — the same username and password used to log in to the dashboard. Use ...
+- [List Placements](https://your-docusaurus-site.example.com/docs/api/list-placements.api): Returns all placements for the given source.
+- [Retrieve Bidder Report Data](https://your-docusaurus-site.example.com/docs/api/retrieve-bidder-report-data.api): Returns bidder reporting data in __NDJSON__ or __CSV__ format based on the query parameters. The endpoint accepts an interval, an optional output f...
+- [Retrieve P2P Revenue Report Data](https://your-docusaurus-site.example.com/docs/api/retrieve-p-2-p-revenue-report-data.api): Returns P2P revenue reporting data in __NDJSON__ or __CSV__ format based on the query parameters. The endpoint accepts a date range, an optional ou...
+- [Retrieve SSP Report Data](https://your-docusaurus-site.example.com/docs/api/retrieve-ssp-report-data.api): Returns reporting data in __NDJSON__ or __CSV__ format based on the query parameters. The endpoint accepts a date range, an optional output format,...
+- [Update Placement](https://your-docusaurus-site.example.com/docs/api/update-placement.api): Updates an existing placement. Send the full placement object including its `id` — all fields are replaced.
+- [Advanced Reporting](https://your-docusaurus-site.example.com/docs/dashboard/advanced-reporting): The BidMachine data reports provide insights into your ad performance, including metrics such as ad requests, impressions, CPM, and revenue, catego...
+- [Blocking Rules](https://your-docusaurus-site.example.com/docs/dashboard/blocking-rules): import Image from '@theme/IdealImage'
+- [Creatives Preview](https://your-docusaurus-site.example.com/docs/dashboard/creatives-preview): import Image from '@theme/IdealImage'
+- [Payments](https://your-docusaurus-site.example.com/docs/dashboard/payments): import Image from '@theme/IdealImage'
+- [Placements](https://your-docusaurus-site.example.com/docs/dashboard/placements): import Image from '@theme/IdealImage'
+- [Source](https://your-docusaurus-site.example.com/docs/dashboard/source): import Image from '@theme/IdealImage'
+- [Enumerated Lists Specification](https://your-docusaurus-site.example.com/docs/dsp/bid-request/enumerated-lists-specification): | Value | Description                                                                             |
+- [Bid Request Examples](https://your-docusaurus-site.example.com/docs/dsp/bid-request/examples): :::note
+- [MRAID Ads Requirements](https://your-docusaurus-site.example.com/docs/dsp/bid-request/mraid-requirements): To track impressions inside the creative, include a script that triggers impression trackers on the `viewableChange` event:
+- [Bid Request Specification](https://your-docusaurus-site.example.com/docs/dsp/bid-request/specification): :::note
+- [Bid Response Examples](https://your-docusaurus-site.example.com/docs/dsp/bid-response/examples): <details>
+- [Macroses](https://your-docusaurus-site.example.com/docs/dsp/bid-response/macroses): :::note
+- [Bid Response Specification](https://your-docusaurus-site.example.com/docs/dsp/bid-response/specification): | Attribute | Type | Description | Example |
+- [CTR Templates](https://your-docusaurus-site.example.com/docs/dsp/other/ctr-templates): Ad experience templates, measured CTR ranges, and the bid response signals that control how BidMachine renders your ads.
+- [Deep Linking](https://your-docusaurus-site.example.com/docs/dsp/other/deeplinks): Deep linking is a powerful technique that enhances user engagement and improves campaign performance. It allows advertisers to direct users straigh...
+- [iOS Specifics](https://your-docusaurus-site.example.com/docs/dsp/other/ios-specifics): import SKAdNetwork from "@site/src/components/mdx/skadnetwork";
+- [nURL and Impression Tracking Schemes](https://your-docusaurus-site.example.com/docs/dsp/other/nurl-and-impression-tracking-schemes): We support two schemes for tracking impressions and triggering `nURL`. 
+- [Getting Started](https://your-docusaurus-site.example.com/docs/dsp/overview): Connect with high-quality inventory, global audiences, and achieve your campaign goals with precision.
+- [Requirements](https://your-docusaurus-site.example.com/docs/dsp/requirements): If you would like to be one of BidMachine Demand Partners, please review the details below:
+- [Adapter Bidding/Waterfall](https://your-docusaurus-site.example.com/docs/sdk/admob/android/adapter): import Tabs from '@theme/Tabs'
+- [Changelog](https://your-docusaurus-site.example.com/docs/sdk/admob/android/changelog)
+- [Waterfall Custom Adapter](https://your-docusaurus-site.example.com/docs/sdk/admob/android/waterfall-adapter): import Tabs from '@theme/Tabs'
+- [Console Setup](https://your-docusaurus-site.example.com/docs/sdk/admob/console-official): import Image from "@theme/IdealImage";
+- [Console Setup](https://your-docusaurus-site.example.com/docs/sdk/admob/console): import Image from "@theme/IdealImage";
+- [Adapter Bidding/Waterfall](https://your-docusaurus-site.example.com/docs/sdk/admob/ios/adapter): import Tabs from '@theme/Tabs'
+- [Changelog](https://your-docusaurus-site.example.com/docs/sdk/admob/ios/changelog): - Fix Native Ad clicks
+- [Waterfall Custom Adapter](https://your-docusaurus-site.example.com/docs/sdk/admob/ios/waterfall-adapter): import Tabs from '@theme/Tabs'
+- [Overview](https://your-docusaurus-site.example.com/docs/sdk/admob/overview): import Step from '@site/src/components/mdx/step'
+- [Advanced Settings](https://your-docusaurus-site.example.com/docs/sdk/general/android/advanced): import Tabs from "@theme/Tabs";
+- [App Privacy Details On Google Play](https://your-docusaurus-site.example.com/docs/sdk/general/android/app-privacy-details): This document outlines the types of user data the app handles, whether we collect it, and relevant remarks for each category.
+- [Banner / MREC Ads](https://your-docusaurus-site.example.com/docs/sdk/general/android/banner): import Tabs from "@theme/Tabs";
+- [Changelog](https://your-docusaurus-site.example.com/docs/sdk/general/android/changelog): **Bug fixes**:
+- [Interstitial Ads](https://your-docusaurus-site.example.com/docs/sdk/general/android/interstitial): import Tabs from "@theme/Tabs";
+- [Native Ads](https://your-docusaurus-site.example.com/docs/sdk/general/android/native): import Tabs from "@theme/Tabs";
+- [Integration](https://your-docusaurus-site.example.com/docs/sdk/general/android/overview): import Tabs from "@theme/Tabs";
+- [Data Privacy](https://your-docusaurus-site.example.com/docs/sdk/general/android/privacy): import Tabs from "@theme/Tabs";
+- [Rewarded Ads](https://your-docusaurus-site.example.com/docs/sdk/general/android/rewarded): import Tabs from "@theme/Tabs";
+- [3rd party SDK integration (Header-Bidding)](https://your-docusaurus-site.example.com/docs/sdk/general/android/third-party-integration): import Tabs from "@theme/Tabs";
+- [In-House Bidder Specification](https://your-docusaurus-site.example.com/docs/sdk/general/bidder): import Tabs from '@theme/Tabs';
+- [Data Collection Practices](https://your-docusaurus-site.example.com/docs/sdk/general/data-collection-practices): The BidMachine SDK collects the following device and app parameters, subject to COPPA and GDPR restrictions as indicated.
+- [Advanced Settings](https://your-docusaurus-site.example.com/docs/sdk/general/ios/advanced): import Tabs from "@theme/Tabs";
+- [App Privacy Details On The App Store](https://your-docusaurus-site.example.com/docs/sdk/general/ios/app-privacy-details): import { Link } from 'react-router-dom';
+- [Banner Ads](https://your-docusaurus-site.example.com/docs/sdk/general/ios/banner): import Tabs from "@theme/Tabs";
+- [Changelog](https://your-docusaurus-site.example.com/docs/sdk/general/ios/changelog): ```swift
+- [Info.plist & Permissions](https://your-docusaurus-site.example.com/docs/sdk/general/ios/info-plist): BidMachine SDK does not require any iOS permissions.
+- [Interstitial Ads](https://your-docusaurus-site.example.com/docs/sdk/general/ios/interstitial): import Tabs from "@theme/Tabs";
+- [Native Ads](https://your-docusaurus-site.example.com/docs/sdk/general/ios/native): import Tabs from "@theme/Tabs";
+- [Integration](https://your-docusaurus-site.example.com/docs/sdk/general/ios/overview): import Tabs from "@theme/Tabs";
+- [Data Privacy](https://your-docusaurus-site.example.com/docs/sdk/general/ios/privacy): import Tabs from "@theme/Tabs";  
+- [Rewarded Ads](https://your-docusaurus-site.example.com/docs/sdk/general/ios/rewarded): import Tabs from "@theme/Tabs";
+- [Header-Bidding](https://your-docusaurus-site.example.com/docs/sdk/general/ios/third-party-integration): import Tabs from "@theme/Tabs";
+- [Leveraging RampID and UID2](https://your-docusaurus-site.example.com/docs/sdk/general/leveraging-rampid): import Tabs from "@theme/Tabs";
+- [In-House Mediation](https://your-docusaurus-site.example.com/docs/sdk/general/pdb): BidMachine could be easily integrated into the PDB auction.  
+- [TCF Vendor List](https://your-docusaurus-site.example.com/docs/sdk/general/tcf-vendors): The [Transparency and Consent Framework](https://iabeurope.eu/transparency-consent-framework/) (TCF) is an industry standard maintained by IAB Euro...
+- [Advanced Settings](https://your-docusaurus-site.example.com/docs/sdk/general/unity/advanced): BidMachine SDK provides logging options to help you debug and monitor the SDK's behavior.
+- [Banner / MREC Ads](https://your-docusaurus-site.example.com/docs/sdk/general/unity/banner): Create a placement configuration using `AdPlacementConfig.BannerBuilder()` with a `BannerAdSize`, optional placement id, and custom parameters.
+- [Changelog](https://your-docusaurus-site.example.com/docs/sdk/general/unity/changelog): **Changes**:
+- [Interstitial Ads](https://your-docusaurus-site.example.com/docs/sdk/general/unity/interstitial): Create a placement configuration using `AdPlacementConfig.InterstitialBuilder()` with an `AdContentType`, optional placement id, and custom paramet...
+- [Integration](https://your-docusaurus-site.example.com/docs/sdk/general/unity/overview): The following page describes how to integrate the BidMachine SDK into your Unity project.
+- [Data Privacy](https://your-docusaurus-site.example.com/docs/sdk/general/unity/privacy): Effective May 25, 2019, the European Union's General Data Protection Regulation (GDPR) has been in force.
+- [Rewarded Ads](https://your-docusaurus-site.example.com/docs/sdk/general/unity/rewarded): Create a placement configuration using `AdPlacementConfig.RewardedBuilder()` with an `AdContentType`, optional placement id, and custom parameters.
+- [Integration Types](https://your-docusaurus-site.example.com/docs/sdk/integration-types): BidMachine supports various integration types to accommodate different development 
+- [Adapters Compatibility](https://your-docusaurus-site.example.com/docs/sdk/ironsource/adapter-compatibility): import AdapterSelect from '@site/src/components/mdx/adapter-select';
+- [Bidding Adapter](https://your-docusaurus-site.example.com/docs/sdk/ironsource/android/bidding-adapter): import Tabs from '@theme/Tabs'
+- [Changelog](https://your-docusaurus-site.example.com/docs/sdk/ironsource/android/changelog): import Tabs from '@theme/Tabs'
+- [Waterfall Custom Adapter](https://your-docusaurus-site.example.com/docs/sdk/ironsource/android/waterfall-custom-adapter): import Tabs from '@theme/Tabs'
+- [IronSource Bidder Specification](https://your-docusaurus-site.example.com/docs/sdk/ironsource/bidder): import Tabs from '@theme/Tabs';
+- [Console Setup](https://your-docusaurus-site.example.com/docs/sdk/ironsource/console): import Image from "@theme/IdealImage";
+- [Bidding Adapter](https://your-docusaurus-site.example.com/docs/sdk/ironsource/ios/bidding-adapter): import Tabs from '@theme/Tabs'
+- [Changelog](https://your-docusaurus-site.example.com/docs/sdk/ironsource/ios/changelog): import Tabs from '@theme/Tabs'
+- [Waterfall Custom Adapter](https://your-docusaurus-site.example.com/docs/sdk/ironsource/ios/waterfall-custom-adapter): import Tabs from '@theme/Tabs'
+- [Overview](https://your-docusaurus-site.example.com/docs/sdk/ironsource/overview): This page gives you step-by-step instructions for how you set BidMachine live as an ad network on the Unity Level Play (IronSource) Mediation platf...
+- [IronSource Publisher Direct Bidding (PDB)](https://your-docusaurus-site.example.com/docs/sdk/ironsource/pdb): import Tabs from '@theme/Tabs';
+- [Unity LevelPlay First Look](https://your-docusaurus-site.example.com/docs/sdk/ironsource/rofl): import Tabs from '@theme/Tabs';
+- [Adapters Compatibility](https://your-docusaurus-site.example.com/docs/sdk/max/adapter-compatibility): import AdapterSelect from '@site/src/components/mdx/adapter-select';
+- [Bidding Adapter](https://your-docusaurus-site.example.com/docs/sdk/max/android/bidding-adapter): import Tabs from '@theme/Tabs'
+- [MAX Bidder Specification](https://your-docusaurus-site.example.com/docs/sdk/max/bidder): import Tabs from '@theme/Tabs';
+- [AppLovin MAX First Look](https://your-docusaurus-site.example.com/docs/sdk/max/first-look): import Tabs from '@theme/Tabs';
+- [Bidding Adapter](https://your-docusaurus-site.example.com/docs/sdk/max/ios/bidding-adapter): import Tabs from '@theme/Tabs'
+- [Console Setup](https://your-docusaurus-site.example.com/docs/sdk/max/max-console-setup): import Image from "@theme/IdealImage";
+- [Overview](https://your-docusaurus-site.example.com/docs/sdk/max/overview): BidMachine Bidding adapter allows you to use the BidMachine ad platform 
+- [AppLovin MAX Publisher Direct Bidding (PDB)](https://your-docusaurus-site.example.com/docs/sdk/max/pdb): import Tabs from '@theme/Tabs';
+- [Waterfall Custom Adapter](https://your-docusaurus-site.example.com/docs/sdk/max/waterfall-custom-adapter): import Tabs from '@theme/Tabs';
+- [Getting Started](https://your-docusaurus-site.example.com/docs/sdk/overview): import Step from '@site/src/components/mdx/step'
+- [Publisher Direct Bidding documentation](https://your-docusaurus-site.example.com/docs/sdk/pdb): Publisher Direct Bidding (PDB) is a type of integration 
+- [Overview](https://your-docusaurus-site.example.com/docs/sdk/ssp/overview): BidMachine bidding supports the [OpenRTB 2.5](https://www.iab.com/wp-content/uploads/2016/03/OpenRTB-API-Specification-Version-2-5-FINAL.pdf) proto...
+- [Enumerated Lists Specification](https://your-docusaurus-site.example.com/docs/sdk/ssp/request/enumerated-lists-specification): | Value | Description                                                                             |
+- [Bid Request Examples](https://your-docusaurus-site.example.com/docs/sdk/ssp/request/examples): <details>
+- [Bid Request Specification](https://your-docusaurus-site.example.com/docs/sdk/ssp/request/specification): import Tabs from '@theme/Tabs';
+- [Examples](https://your-docusaurus-site.example.com/docs/sdk/ssp/response/examples): <details>
+- [Testing Environment](https://your-docusaurus-site.example.com/docs/sdk/ssp/testing): Use the following testing endpoint for bid requests:
+- [Console Setup](https://your-docusaurus-site.example.com/docs/sdk/topon/console-setup): import Image from "@theme/IdealImage";
+- [Overview](https://your-docusaurus-site.example.com/docs/sdk/topon/overview): BidMachine adapter allows you to use the BidMachine ad platform within your existing TopOn mediation. BidMachine supports banner, native, interstit...

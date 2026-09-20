@@ -1,0 +1,403 @@
+{
+  "skill_name": "bidmachine-ios",
+  "notes": "Feature-first eval set covering the iOS skill's capability surface (S2S out of scope this iteration), structured so a shared cross-platform harness can consume it. Each integration eval is run against a fresh copy of a blank SwiftUI app (fixtures/ios-app) that builds clean BEFORE integration; the agent integrates via the package manager named in the prompt. Install method is a FULL axis evaluated equally: every integration capability (basic interstitial, rewarded+revenue+errors, banner/MREC, privacy, AdMob-mediation) is tested under BOTH CocoaPods and SPM as separate, paired evals, each prompt naming its manager so the manager is deterministic and graded (dependency + build-gate assertions). CocoaPods is the skill's documented default and most-used path, but both are first-class test targets with equal coverage. The detection evals (13-16) cover existing-CocoaPods (use it), existing-SPM (use it), neither-present (ASK the user and recommend CocoaPods — do not silently default), and both-present (ASK which path to use; never switch the project's managers). The headline assertion for every (non-parked) integration eval is that the produced app COMPILES on the simulator via xcodebuild ('** BUILD SUCCEEDED **') on the matching build gate. The skill's iOS API was verified against the real SDK (BidMachinePlus 0.1.0, which vends InterstitialAd/RewardedAd/BannerAd); the banner/MREC pair (evals 4, 5) tests BannerAd at MREC (.mrec). The fixture uses objectVersion 77 / file-system-synchronized groups and REQUIRES Xcode 16+. The Plus coordinates are the BidMachinePlus CocoaPods pod and the BidMachinePlus-SPM Swift package (Swift module import BidMachinePlus) — the only dependency names the evals/skill use. The SKAdNetworkItems list remains a placeholder. The released 0.1.0 public coordinates (pod BidMachinePlus, SPM BidMachinePlus-SPM, sources) live in references/distribution.md. Prompts give no version. Mediator is never an organizing axis and never a pass/fail gate — only the AdMob-mediation evals (8, 9) expect with(mediator:), and only as analytics. The process evals — checklist-step-order (10), explore-project-first (11), ask-questions-before-editing (12) — and the detection evals (13-16) are graded from the run transcript. Because the skill mandates asking clarifying questions first, integration evals are run with those answers supplied so headless runs don't stall; eval 12 gets none, to test the asking itself. Schema is shared-harness compatible: a common harness reads id/name/prompt/expected_output/files/assertions; the iOS-only keys (fixture, fixture_setup, install_method, process_expectations, build_gate, verifier_expectation, notes) are additive and ignored by the common path.",
+  "build_gates": {
+    "spm": "xcodebuild -project DemoApp.xcodeproj -scheme DemoApp -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -resolvePackageDependencies && xcodebuild -project DemoApp.xcodeproj -scheme DemoApp -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO",
+    "cocoapods": "pod install && xcodebuild -workspace DemoApp.xcworkspace -scheme DemoApp -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' build CODE_SIGNING_ALLOWED=NO"
+  },
+  "evals": [
+    {
+      "id": 0,
+      "name": "basic-interstitial-spm",
+      "prompt": "I'm adding monetization to my iOS app (SwiftUI). I want a single full-screen interstitial ad shown between levels using BidMachine Plus. Integrate via Swift Package Manager. Set up the dependency, initialize the SDK, and load and show one interstitial. My app key is a1b2c3d4.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "spm",
+      "expected_output": "BidMachinePlus-SPM package added with -ObjC linker flag; Info.plist NSAppTransportSecurity set; BidMachine.instance(appKey:).initialize(config:); InterstitialAd with delegate, load(), show(from: UIViewController); real app key a1b2c3d4. Compiles via xcodebuild.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the spm build gate)"},
+        {"id": "dep-spm", "text": "BidMachinePlus-SPM package reference added to the Xcode project (no Podfile introduced)"},
+        {"id": "objc-flag", "text": "-ObjC present in OTHER_LDFLAGS (required for the SDK's Obj-C category symbols)"},
+        {"id": "ats", "text": "NSAppTransportSecurity present in Info.plist"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "interstitial-wired", "text": "InterstitialAd created, delegate set before load(), shown via show(from:) with a UIViewController"},
+        {"id": "real-appkey", "text": "Real app key a1b2c3d4 used; no YOUR_APP_KEY placeholder"},
+        {"id": "no-placeholders", "text": "No unresolved {{...}}, YOUR_APP_KEY, or YOUR_PLACEMENT_ID left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "spm",
+      "verifier_expectation": "verify_integration.py reports no FAIL: BidMachine dependency PASS (SPM), SDK init PASS, Mode PASS (adNetwork), Template placeholders PASS, Placeholder keys PASS; -ObjC/ATS PASS once added.",
+      "notes": "SPM half of the basic-interstitial pair (CocoaPods half is eval 1). Plus SPM package URL + version are unconfirmed placeholders supplied by the harness; the prompt gives no version."
+    },
+    {
+      "id": 1,
+      "name": "basic-interstitial-cocoapods",
+      "prompt": "I'm adding monetization to my iOS app (SwiftUI). I want a single full-screen interstitial ad shown between levels using BidMachine Plus. Integrate via CocoaPods. Set up the dependency, initialize the SDK, and load and show one interstitial. My app key is a1b2c3d4.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "cocoapods",
+      "expected_output": "Podfile with use_frameworks! and the BidMachinePlus pod; pod install run; build the generated .xcworkspace; Info.plist NSAppTransportSecurity set; BidMachine.instance(appKey:).initialize(config:); InterstitialAd with delegate, load(), show(from:); real app key a1b2c3d4. Compiles via xcodebuild on the workspace.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the cocoapods build gate on the .xcworkspace)"},
+        {"id": "dep-pods", "text": "Podfile declares the BidMachinePlus pod with use_frameworks!; pod install run (no SPM package introduced)"},
+        {"id": "workspace-build", "text": "Build targets the generated .xcworkspace, not the bare .xcodeproj"},
+        {"id": "ats", "text": "NSAppTransportSecurity present in Info.plist"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "interstitial-wired", "text": "InterstitialAd created, delegate set before load(), shown via show(from:) with a UIViewController"},
+        {"id": "real-appkey", "text": "Real app key a1b2c3d4 used; no YOUR_APP_KEY placeholder"},
+        {"id": "no-placeholders", "text": "No unresolved {{...}}, YOUR_APP_KEY, or YOUR_PLACEMENT_ID left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "cocoapods",
+      "verifier_expectation": "verify_integration.py reports no FAIL: BidMachine dependency PASS (pod), SDK init PASS, Mode PASS (adNetwork), Template placeholders PASS, Placeholder keys PASS, ATS PASS. -ObjC is WARN-only and acceptable for a use_frameworks! pod.",
+      "notes": "CocoaPods half of the basic-interstitial pair (SPM half is eval 0). Plus pod name + version are unconfirmed placeholders supplied by the harness; the prompt gives no version."
+    },
+    {
+      "id": 2,
+      "name": "rewarded-revenue-errors-spm",
+      "prompt": "I'm adding a BidMachine Plus rewarded video to my iOS app (SwiftUI), integrating via Swift Package Manager. It should grant the user coins when they finish watching; I also want to forward the ad revenue to my analytics and log load failures with their error codes. App key: rwd-key-77.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "spm",
+      "expected_output": "BidMachinePlus-SPM package added with -ObjC; RewardedAd with didReceiveReward granting the reward; didPayRevenue forwarding adInfo.price/precision to analytics; didFailToLoadAd reading BidMachineError (e.g. .noFill); real app key. Compiles via the spm build gate.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the spm build gate)"},
+        {"id": "dep-spm", "text": "BidMachinePlus-SPM package reference added to the Xcode project (no Podfile introduced)"},
+        {"id": "objc-flag", "text": "-ObjC present in OTHER_LDFLAGS"},
+        {"id": "rewarded-wired", "text": "RewardedAd created, delegate set, load() called"},
+        {"id": "on-rewarded", "text": "didReceiveReward(adInfo:reward:) present and grants the reward (reward is an optional Reward with label/amount)"},
+        {"id": "revenue", "text": "didPayRevenue(adInfo:) forwards adInfo.price / precision to analytics"},
+        {"id": "error-codes", "text": "didFailToLoadAd reads BidMachineError (code / .noFill etc.)"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key rwd-key-77 used; no placeholder"},
+        {"id": "no-placeholders", "text": "No unresolved {{...}}, YOUR_APP_KEY, or YOUR_PLACEMENT_ID left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "spm",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (SPM).",
+      "notes": "SPM half of the rewarded-feature pair (CocoaPods half is eval 3). Coordinate/version placeholders resolved by the harness."
+    },
+    {
+      "id": 3,
+      "name": "rewarded-revenue-errors-cocoapods",
+      "prompt": "I'm adding a BidMachine Plus rewarded video to my iOS app (SwiftUI), integrating via CocoaPods. It should grant the user coins when they finish watching; I also want to forward the ad revenue to my analytics and log load failures with their error codes. App key: rwd-key-78.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "cocoapods",
+      "expected_output": "Podfile with use_frameworks! and the BidMachinePlus pod, pod install run, workspace built; RewardedAd with didReceiveReward granting the reward; didPayRevenue forwarding adInfo.price/precision to analytics; didFailToLoadAd reading BidMachineError; real app key. Compiles via the cocoapods build gate on the .xcworkspace.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the cocoapods build gate on the .xcworkspace)"},
+        {"id": "dep-pods", "text": "Podfile declares the BidMachinePlus pod with use_frameworks!; pod install run (no SPM package introduced)"},
+        {"id": "workspace-build", "text": "Build targets the generated .xcworkspace, not the bare .xcodeproj"},
+        {"id": "rewarded-wired", "text": "RewardedAd created, delegate set, load() called"},
+        {"id": "on-rewarded", "text": "didReceiveReward(adInfo:reward:) present and grants the reward (reward is an optional Reward with label/amount)"},
+        {"id": "revenue", "text": "didPayRevenue(adInfo:) forwards adInfo.price / precision to analytics"},
+        {"id": "error-codes", "text": "didFailToLoadAd reads BidMachineError (code / .noFill etc.)"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key rwd-key-78 used; no placeholder"},
+        {"id": "no-placeholders", "text": "No unresolved {{...}}, YOUR_APP_KEY, or YOUR_PLACEMENT_ID left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "cocoapods",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (pod). -ObjC is WARN-only for a use_frameworks! pod.",
+      "notes": "CocoaPods half of the rewarded-feature pair (SPM half is eval 2). Coordinate/version placeholders resolved by the harness."
+    },
+    {
+      "id": 4,
+      "name": "banner-mrec-spm",
+      "prompt": "Add a BidMachine Plus banner to my iOS app, integrating via Swift Package Manager. I want a 300x250 MREC, and I'd also like to know how to attach the banner into a view in my layout. App key: banner-key-22.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "spm",
+      "expected_output": "BidMachinePlus-SPM package added with -ObjC; BannerAd created at MREC size (.mrec) with delegate set and load() called; the banner added into a UIView via addSubview after didLoadAd; real app key banner-key-22. Compiles via the spm build gate.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the spm build gate)"},
+        {"id": "dep-spm", "text": "BidMachinePlus-SPM package reference added to the Xcode project (no Podfile introduced)"},
+        {"id": "objc-flag", "text": "-ObjC present in OTHER_LDFLAGS (required for the SDK's Obj-C category symbols)"},
+        {"id": "banner-wired", "text": "BannerAd created with size .mrec, delegate set before load(), load() called"},
+        {"id": "banner-attached", "text": "Banner added into a UIView via addSubview after didLoadAd (not before load completes)"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key banner-key-22 used; no placeholder"},
+        {"id": "no-placeholders", "text": "No unresolved {{...}}, YOUR_APP_KEY, or YOUR_PLACEMENT_ID left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "spm",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (SPM).",
+      "notes": "SPM half of the banner pair (CocoaPods half is eval 5). Banner shipped in BidMachinePlus 0.1.0 (BannerAd/BannerAdSize/.mrec); MREC requested via .mrec; attach-into-layout via addSubview after didLoadAd."
+    },
+    {
+      "id": 5,
+      "name": "banner-mrec-cocoapods",
+      "prompt": "Add a BidMachine Plus banner to my iOS app, integrating via CocoaPods. I want a 300x250 MREC, and I'd also like to know how to attach the banner into a view in my layout. App key: banner-key-23.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "cocoapods",
+      "expected_output": "Podfile with use_frameworks! and the BidMachinePlus pod, pod install run, workspace built; BannerAd created at MREC size (.mrec) with delegate set and load() called; the banner added into a UIView via addSubview after didLoadAd; real app key banner-key-23. Compiles via the cocoapods build gate on the .xcworkspace.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the cocoapods build gate on the .xcworkspace)"},
+        {"id": "dep-pods", "text": "Podfile declares the BidMachinePlus pod with use_frameworks!; pod install run (no SPM package introduced)"},
+        {"id": "workspace-build", "text": "Build targets the generated .xcworkspace, not the bare .xcodeproj"},
+        {"id": "banner-wired", "text": "BannerAd created with size .mrec, delegate set before load(), load() called"},
+        {"id": "banner-attached", "text": "Banner added into a UIView via addSubview after didLoadAd (not before load completes)"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key banner-key-23 used; no placeholder"},
+        {"id": "no-placeholders", "text": "No unresolved {{...}}, YOUR_APP_KEY, or YOUR_PLACEMENT_ID left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "cocoapods",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (pod). -ObjC is WARN-only for a use_frameworks! pod.",
+      "notes": "CocoaPods half of the banner pair (SPM half is eval 4). Banner shipped in BidMachinePlus 0.1.0 (BannerAd/BannerAdSize/.mrec); MREC requested via .mrec; attach-into-layout via addSubview after didLoadAd."
+    },
+    {
+      "id": 6,
+      "name": "privacy-coppa-gdpr-ccpa-spm",
+      "prompt": "My iOS app is a kids' game (child-directed, under 13) and we also have users in the EU and California. Integrate BidMachine Plus via Swift Package Manager with an interstitial and make sure we handle privacy correctly for COPPA, GDPR, and CCPA. App key: kids-key-09.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "spm",
+      "expected_output": "BidMachinePlus-SPM package added with -ObjC; sdk.regulations.setCoppa(true) for the child-directed app; GDPR/CCPA left to the CMP auto-read (NO invented manual consent API); interstitial wired; real app key. Compiles via the spm build gate.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the spm build gate)"},
+        {"id": "dep-spm", "text": "BidMachinePlus-SPM package reference added to the Xcode project (no Podfile introduced)"},
+        {"id": "objc-flag", "text": "-ObjC present in OTHER_LDFLAGS"},
+        {"id": "coppa", "text": "sdk.regulations.setCoppa(true) called for the child-directed app"},
+        {"id": "no-manual-consent", "text": "No invented manual GDPR/CCPA consent API (setHasUserConsent/setConsent/setDoNotSell) — left to CMP auto-read"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired (delegate, load, show(from:))"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key kids-key-09 used; no placeholder"}
+      ],
+      "process_expectations": [],
+      "build_gate": "spm",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (SPM).",
+      "notes": "SPM half of the privacy pair (CocoaPods half is eval 7). COPPA is publisher-set; GDPR/CCPA are CMP auto-read (UserDefaults). ATT governs IDFA access and is distinct from regulations; this prompt does not require an ATT prompt unless IDFA is collected."
+    },
+    {
+      "id": 7,
+      "name": "privacy-coppa-gdpr-ccpa-cocoapods",
+      "prompt": "My iOS app is a kids' game (child-directed, under 13) and we also have users in the EU and California. Integrate BidMachine Plus via CocoaPods with an interstitial and make sure we handle privacy correctly for COPPA, GDPR, and CCPA. App key: kids-key-10.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "cocoapods",
+      "expected_output": "Podfile with use_frameworks! and the BidMachinePlus pod, pod install run, workspace built; sdk.regulations.setCoppa(true) for the child-directed app; GDPR/CCPA left to the CMP auto-read (NO invented manual consent API); interstitial wired; real app key. Compiles via the cocoapods build gate on the .xcworkspace.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the cocoapods build gate on the .xcworkspace)"},
+        {"id": "dep-pods", "text": "Podfile declares the BidMachinePlus pod with use_frameworks!; pod install run (no SPM package introduced)"},
+        {"id": "workspace-build", "text": "Build targets the generated .xcworkspace, not the bare .xcodeproj"},
+        {"id": "coppa", "text": "sdk.regulations.setCoppa(true) called for the child-directed app"},
+        {"id": "no-manual-consent", "text": "No invented manual GDPR/CCPA consent API (setHasUserConsent/setConsent/setDoNotSell) — left to CMP auto-read"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired (delegate, load, show(from:))"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key kids-key-10 used; no placeholder"}
+      ],
+      "process_expectations": [],
+      "build_gate": "cocoapods",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (pod). -ObjC is WARN-only for a use_frameworks! pod.",
+      "notes": "CocoaPods half of the privacy pair (SPM half is eval 6). COPPA is publisher-set; GDPR/CCPA are CMP auto-read (UserDefaults)."
+    },
+    {
+      "id": 8,
+      "name": "admob-mediation-interstitial-spm",
+      "prompt": "We already run Google AdMob as our mediation. Add BidMachine Plus as a bidding source feeding into AdMob, with an interstitial between screens. Integrate via Swift Package Manager. App key: admob-key-55.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "spm",
+      "expected_output": "BidMachinePlus-SPM package added with -ObjC; integrationType .adNetwork with .with(mediator: MediatorName.admob) (analytics only — the integration still compiles without depending on it); interstitial wired; real app key. Compiles via the spm build gate.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the spm build gate)"},
+        {"id": "dep-spm", "text": "BidMachinePlus-SPM package reference added to the Xcode project (no Podfile introduced)"},
+        {"id": "objc-flag", "text": "-ObjC present in OTHER_LDFLAGS"},
+        {"id": "adnetwork", "text": "Initialized with integrationType .adNetwork"},
+        {"id": "mediator-admob", "text": ".with(mediator: MediatorName.admob) declared (analytics for the external AdMob mediation)"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired (delegate, load, show(from:))"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key admob-key-55 used; no placeholder"}
+      ],
+      "process_expectations": [],
+      "build_gate": "spm",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (SPM); Mode PASS (adNetwork + with(mediator:) — analytics only). Mediator is never a FAIL.",
+      "notes": "SPM half of the AdMob-mediation pair (CocoaPods half is eval 9). Mediator is analytics-only and never a pass/fail gate. 'Plugged into a mediation' is still .adNetwork, not .mediation mode."
+    },
+    {
+      "id": 9,
+      "name": "admob-mediation-interstitial-cocoapods",
+      "prompt": "We already run Google AdMob as our mediation. Add BidMachine Plus as a bidding source feeding into AdMob, with an interstitial between screens. Integrate via CocoaPods. App key: admob-key-56.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "cocoapods",
+      "expected_output": "Podfile with use_frameworks! and the BidMachinePlus pod, pod install run, workspace built; integrationType .adNetwork with .with(mediator: MediatorName.admob) (analytics only); interstitial wired; real app key. Compiles via the cocoapods build gate on the .xcworkspace.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the cocoapods build gate on the .xcworkspace)"},
+        {"id": "dep-pods", "text": "Podfile declares the BidMachinePlus pod with use_frameworks!; pod install run (no SPM package introduced)"},
+        {"id": "workspace-build", "text": "Build targets the generated .xcworkspace, not the bare .xcodeproj"},
+        {"id": "adnetwork", "text": "Initialized with integrationType .adNetwork"},
+        {"id": "mediator-admob", "text": ".with(mediator: MediatorName.admob) declared (analytics for the external AdMob mediation)"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired (delegate, load, show(from:))"},
+        {"id": "init", "text": "Both BidMachine.instance(appKey:) and initialize(config:) are present"},
+        {"id": "real-appkey", "text": "Real app key admob-key-56 used; no placeholder"}
+      ],
+      "process_expectations": [],
+      "build_gate": "cocoapods",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (pod); Mode PASS (adNetwork + with(mediator:) — analytics only). Mediator is never a FAIL. -ObjC is WARN-only for a use_frameworks! pod.",
+      "notes": "CocoaPods half of the AdMob-mediation pair (SPM half is eval 8). Mediator is analytics-only and never a pass/fail gate. 'Plugged into a mediation' is still .adNetwork, not .mediation mode."
+    },
+    {
+      "id": 10,
+      "name": "checklist-step-order",
+      "prompt": "Integrate BidMachine Plus into my iOS app (SwiftUI) with a single interstitial. App key: chk-key-01.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "either",
+      "expected_output": "The agent follows the skill's Checklist order: explores the project before its first edit (step 1), chooses an install method (step 3), configures Info.plist + initializes + wires the interstitial, then runs a build/verify after integrating (step 8). Produces a compiling interstitial integration with the real app key.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **')"},
+        {"id": "interstitial-wired", "text": "InterstitialAd created, loaded and shown via show(from:)"},
+        {"id": "real-appkey", "text": "Real app key chk-key-01 used; no placeholder"}
+      ],
+      "process_expectations": [
+        {"id": "explores-first", "text": "The run inspected project files (Read/Grep/Glob) before its first Write/Edit — Checklist step 1. Graded from the run transcript."},
+        {"id": "chooses-install-method", "text": "The run detected/chose an install method (CocoaPods or SPM) before adding the dependency — Checklist step 3."},
+        {"id": "verifies-at-end", "text": "The run ran a build / verify_integration.py AFTER integrating — Checklist step 8. Graded from the run transcript."}
+      ],
+      "build_gate": "either",
+      "verifier_expectation": "verify_integration.py reports no FAIL after integration.",
+      "notes": "Literal task-list creation isn't observable in a dispatched subagent — this measures step order, not task objects."
+    },
+    {
+      "id": 11,
+      "name": "explore-project-first",
+      "prompt": "Add a BidMachine Plus rewarded ad to my existing iOS app. App key: exp-key-02.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "either",
+      "expected_output": "The agent's first actions inspect the project — the .xcodeproj/.pbxproj, the package manager in use (Podfile / Package.swift / package refs), Info.plist, the @main App / AppDelegate / SceneDelegate, the UI framework (SwiftUI/UIKit) and concurrency style (async/await vs GCD/completion handlers), any existing ad setup, recent commits, and any documented requirements/goals — before writing any code, matching Checklist step 1. The fixture is a SwiftUI app, so the produced ad code should fit SwiftUI (instance held in the App/an ObservableObject; full-screen ads presented from the top-most view controller) rather than introduce a stray UIViewController.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **')"},
+        {"id": "rewarded-wired", "text": "RewardedAd created and loaded"},
+        {"id": "real-appkey", "text": "Real app key exp-key-02 used; no placeholder"}
+      ],
+      "process_expectations": [
+        {"id": "explores-first", "text": "Before any Write/Edit, the run inspected the project — .pbxproj, package manager files, Info.plist, app entry point, the UI framework (SwiftUI/UIKit) and concurrency style, existing ad setup, recent commits, requirements/goals docs. Graded from the run transcript."},
+        {"id": "matches-conventions", "text": "The produced ad code fits the fixture's SwiftUI + concurrency conventions (no stray UIViewController bolted on, no foreign concurrency style introduced). Graded from the outputs/transcript."}
+      ],
+      "build_gate": "either",
+      "verifier_expectation": "verify_integration.py reports no FAIL after integration.",
+      "notes": "Inspects iOS project structure before editing; package manager detection is part of exploration."
+    },
+    {
+      "id": 12,
+      "name": "ask-questions-before-editing",
+      "prompt": "I want to monetize my iOS app with BidMachine Plus.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": null,
+      "install_method": "n/a",
+      "expected_output": "The prompt is under-specified (no app key, formats, demand mode, or package manager), so before writing or editing any code the agent asks the user clarifying questions — one at a time — to establish app key, ad formats, demand mode, package manager, and privacy needs. It does not start editing on assumptions. (No compile gate: asking, not integrating, is the correct outcome here.)",
+      "files": [],
+      "assertions": [],
+      "process_expectations": [
+        {"id": "asks-before-editing", "text": "The run asked the user clarifying questions (app key, formats, demand mode, package manager, privacy) before any Write/Edit. Graded from the run transcript."},
+        {"id": "one-at-a-time", "text": "Clarifying questions were asked one at a time, not as a single dump."},
+        {"id": "no-premature-edits", "text": "No code was written or edited before the questions were asked."}
+      ],
+      "build_gate": "none",
+      "verifier_expectation": "n/a — no integration is produced; asking is the correct outcome.",
+      "notes": "Run with no pre-supplied answers, unlike the integration evals."
+    },
+    {
+      "id": 13,
+      "name": "detect-existing-cocoapods",
+      "prompt": "Add a BidMachine Plus interstitial to my app. App key: det-pods-01.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": "Harness seeds the fixture copy with a working CocoaPods setup before the run: a Podfile (with use_frameworks! and at least one unrelated pod) and the generated .xcworkspace, so the project is already CocoaPods-managed.",
+      "install_method": "cocoapods",
+      "expected_output": "The agent detects the existing Podfile/.xcworkspace and integrates via CocoaPods (adds the BidMachinePlus pod to the existing Podfile, pod install, builds the workspace). It does NOT introduce an SPM package or switch the project's package manager.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the cocoapods build gate)"},
+        {"id": "uses-cocoapods", "text": "BidMachinePlus pod added to the existing Podfile; pod install run"},
+        {"id": "no-spm-introduced", "text": "No SPM package reference added — the project's manager was not switched"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired (delegate, load, show(from:))"},
+        {"id": "real-appkey", "text": "Real app key det-pods-01 used; no placeholder"}
+      ],
+      "process_expectations": [
+        {"id": "detects-pods", "text": "The run identified CocoaPods as the active manager (saw the Podfile/.xcworkspace) before choosing the install path. Graded from the run transcript."}
+      ],
+      "build_gate": "cocoapods",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (pod).",
+      "notes": "Covers install-method detection bullet: existing Podfile -> use CocoaPods."
+    },
+    {
+      "id": 14,
+      "name": "detect-existing-spm",
+      "prompt": "Add a BidMachine Plus interstitial to my app. App key: det-spm-01.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": "Harness seeds the fixture copy with an existing SwiftPM dependency before the run: an unrelated XCRemoteSwiftPackageReference in DemoApp.xcodeproj/project.pbxproj (and Package.resolved), so the project is already SPM-managed.",
+      "install_method": "spm",
+      "expected_output": "The agent detects the existing SPM package references and integrates via SPM (adds the BidMachinePlus-SPM package + -ObjC, resolves, builds the project). It does NOT create a Podfile.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "App compiles on the simulator ('** BUILD SUCCEEDED **' via the spm build gate)"},
+        {"id": "uses-spm", "text": "BidMachinePlus-SPM package reference added to the existing SPM-managed project"},
+        {"id": "objc-flag", "text": "-ObjC present in OTHER_LDFLAGS"},
+        {"id": "no-podfile-introduced", "text": "No Podfile created — the project's manager was not switched"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired (delegate, load, show(from:))"},
+        {"id": "real-appkey", "text": "Real app key det-spm-01 used; no placeholder"}
+      ],
+      "process_expectations": [
+        {"id": "detects-spm", "text": "The run identified SPM as the active manager (saw the package references) before choosing the install path. Graded from the run transcript."}
+      ],
+      "build_gate": "spm",
+      "verifier_expectation": "verify_integration.py reports no FAIL; dependency PASS (SPM).",
+      "notes": "Covers install-method detection bullet: existing SPM refs -> use SPM."
+    },
+    {
+      "id": 15,
+      "name": "detect-neither-ask-recommend-cocoapods",
+      "prompt": "Add a BidMachine Plus interstitial to my app. App key: det-none-01.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": "None — the committed fixture is dependency-manager neutral (no Podfile, no SPM package references).",
+      "install_method": "either",
+      "expected_output": "With neither package manager present, the agent ASKS the user which path to use, recommending CocoaPods as the preferred BidMachine Plus path. It does NOT silently choose a manager (and never silently picks SPM) and does not integrate before asking. Asking — not integrating — is the correct outcome here; no compile gate.",
+      "files": [],
+      "assertions": [],
+      "process_expectations": [
+        {"id": "asks-which-manager", "text": "The run asked the user which package manager to use (CocoaPods vs SPM) before adding any dependency. Graded from the run transcript."},
+        {"id": "recommends-cocoapods", "text": "When asking, the run recommended CocoaPods as the preferred/default BidMachine Plus path. Graded from the run transcript."},
+        {"id": "no-silent-choice", "text": "The run did NOT silently pick a manager (especially not SPM) or integrate before the user answered. Graded from the run transcript."}
+      ],
+      "build_gate": "none",
+      "verifier_expectation": "n/a — asking (recommending CocoaPods) is the correct outcome; no integration is produced.",
+      "notes": "Covers the neither-present policy: ASK the user and recommend CocoaPods; do not silently default. Tightened from the earlier 'silent CocoaPods default OR ask' so a greenfield project always asks."
+    },
+    {
+      "id": 16,
+      "name": "detect-both-ask",
+      "prompt": "Add a BidMachine Plus interstitial to my app. App key: det-both-01.",
+      "fixture": "fixtures/ios-app",
+      "fixture_setup": "Harness seeds the fixture copy with BOTH package managers present before the run: a Podfile (with use_frameworks! and at least one unrelated pod) plus the generated .xcworkspace, AND an unrelated XCRemoteSwiftPackageReference in DemoApp.xcodeproj/project.pbxproj (and Package.resolved). The project is managed by both CocoaPods and SwiftPM.",
+      "install_method": "either",
+      "expected_output": "With BOTH package managers present, the agent ASKS the user which path to use for BidMachine Plus before adding any dependency. It does NOT silently choose one, and does NOT switch or remove the project's existing managers (the Podfile and the SPM references both remain). Asking — not integrating — is the correct outcome here; no compile gate.",
+      "files": [],
+      "assertions": [],
+      "process_expectations": [
+        {"id": "asks-which-manager", "text": "The run asked the user which package manager to use for BidMachine (CocoaPods vs SPM) before adding any dependency. Graded from the run transcript."},
+        {"id": "no-silent-choice", "text": "The run did NOT silently pick a manager or integrate before the user answered. Graded from the run transcript."},
+        {"id": "no-manager-switch", "text": "The run did NOT switch or remove either existing package manager — both the Podfile and the SPM references are left intact. Graded from the run transcript."}
+      ],
+      "build_gate": "none",
+      "verifier_expectation": "n/a — asking is the correct outcome; no integration is produced.",
+      "notes": "Covers the both-present policy branch: ASK the user which path to use; do not silently choose and do not switch managers. Completes the install-method detection set (13 existing-CocoaPods, 14 existing-SPM, 15 neither, 16 both)."
+    }
+  ]
+}

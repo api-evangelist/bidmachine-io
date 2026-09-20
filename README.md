@@ -64,5 +64,14 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-BidMachine is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry) and added to the network as a stub for full-pipeline profiling.
-- https://bidmachine.io/
+BidMachine is a mobile in-app ad exchange and monetization platform (BidMachine, Inc.) that sells publishers' mobile inventory to demand partners through real-time OpenRTB 2.5 auctions, integrated through the BidMachine SDK (Android, iOS, Unity), the BidMachine Plus mediation SDK, or bidding adapters for AppLovin MAX, Unity LevelPlay, AdMob/GAM and TopOn.
+
+Public API surface profiled here:
+
+- **Placement Management API** — create, list, update and delete placements on an ad source with a short-lived bearer token ([reference](https://developers.bidmachine.io/api/bidmachine-placement-management-api), [OpenAPI](openapi/bidmachine-io-placement-management-openapi.yml))
+- **Reporting API** — SSP, bidder and P2P revenue reports as NDJSON or CSV over HTTP Basic ([reference](https://developers.bidmachine.io/api/bidmachine-reporting-api), [OpenAPI](openapi/bidmachine-io-reporting-openapi.yml))
+- **OpenRTB Auction API** — regional bid endpoints for in-house bidders and supply partners ([spec](https://developers.bidmachine.io/sdk/general/bidder))
+- Provider-published **Agent Skills** for the BidMachine Plus SDK, saved verbatim under [skills/](skills/) from [bidmachine/bidmachine-sdk-agents](https://github.com/bidmachine/bidmachine-sdk-agents) (Apache-2.0)
+
+Links: [website](https://bidmachine.io/) · [developer portal](https://developers.bidmachine.io/) · [status](https://bidmachine.statuspage.io/) · [GitHub](https://github.com/bidmachine)
+

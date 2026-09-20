@@ -1,0 +1,49 @@
+generated: '2026-09-19'
+method: derived
+status: candidate
+source: openapi/bidmachine-io-placement-management-openapi.yml, openapi/bidmachine-io-reporting-openapi.yml
+description: >-
+  BidMachine publishes no MCP server. Searched: developers.bidmachine.io, docs.bidmachine.io,
+  mediation-docs.bidmachine.io, the github.com/bidmachine organization (38 public repos), the npm
+  registry (no @bidmachine scope) and the MCP host convention mcp.bidmachine.io (does not resolve).
+  The only MCP mention on the provider's surface is in the BidMachine Plus Unity agent skill
+  (skills/bidmachine-unity/references/mcp-setup.md), which recommends the THIRD-PARTY CoplayDev
+  Unity MCP server so a coding agent can drive the Unity editor — that is not a BidMachine server
+  and exposes no BidMachine API. The tool list below is a candidate derived one-to-one from the
+  eight operations in the provider's OpenAPI; nobody ships it.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: unknown
+  verified: derived
+server:
+  name: bidmachine (candidate)
+  transport: null
+  url: null
+tools:
+  - name: get_access_token
+    description: Exchange dashboard login/password (HTTP Basic) for a short-lived bearer token used by the placement tools.
+    source_operation: openapi/bidmachine-io-placement-management-openapi.yml#getAccessToken
+  - name: list_placements
+    description: Return all placements for an ad source the authenticated publisher owns.
+    source_operation: openapi/bidmachine-io-placement-management-openapi.yml#listPlacements
+  - name: create_placement
+    description: Create a placement (name, platform, bundle, adType, placementType, hva, optional pricefloor) on a source; the id is generated server-side.
+    source_operation: openapi/bidmachine-io-placement-management-openapi.yml#createPlacement
+  - name: update_placement
+    description: Replace an existing placement (full object including id).
+    source_operation: openapi/bidmachine-io-placement-management-openapi.yml#updatePlacement
+  - name: delete_placement
+    description: Delete a placement by id from a source.
+    source_operation: openapi/bidmachine-io-placement-management-openapi.yml#deletePlacement
+  - name: retrieve_ssp_report_data
+    description: SSP (publisher) performance report for a date range as NDJSON or CSV, with selectable dimensions; 45-day maximum window, 6 requests/minute.
+    source_operation: openapi/bidmachine-io-reporting-openapi.yml#retrieveSspReportData
+  - name: retrieve_bidder_report_data
+    description: Bidder (demand) report for a date range as NDJSON or CSV.
+    source_operation: openapi/bidmachine-io-reporting-openapi.yml#retrieveBidderReportData
+  - name: retrieve_p2p_revenue_report_data
+    description: P2P revenue report (up to 2 years) as NDJSON or CSV; 403 when the account is not entitled.
+    source_operation: openapi/bidmachine-io-reporting-openapi.yml#retrieveP2pRevenueReportData

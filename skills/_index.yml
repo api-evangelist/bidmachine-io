@@ -1,0 +1,47 @@
+generated: '2026-09-19'
+method: searched
+source: https://github.com/bidmachine/bidmachine-sdk-agents (tag 0.1.0, commit 62ca48102e2ed8e88141fc71a271593fbb47b28c, 2026-07-16; Apache-2.0)
+description: >-
+  Provider-published Agent Skills (searched, saved verbatim) plus two API Evangelist-generated skills
+  for the REST APIs. BidMachine ships "BidMachine Plus SDK Agents": one runtime-agnostic SKILL.md per
+  platform (Android, iOS, Unity) with on-demand references and an executable read-only verifier,
+  installable into Claude Code, Codex and Gemini CLI. Those cover the client SDK; they explicitly
+  scope out "server-side OpenRTB bidding or revenue-dashboard reporting", so the two generated skills
+  below cover the Placement Management and Reporting APIs from the harvested OpenAPI.
+skills:
+  - file: bidmachine-android/SKILL.md
+    name: bidmachine-android
+    method: searched
+    source: https://github.com/bidmachine/bidmachine-sdk-agents/blob/main/skills/bidmachine-android/SKILL.md
+    license: Apache-2.0
+    api: BidMachine Plus Android SDK (io.bidmachine.plus)
+    references: [bidmachine-android/references/ad-units.md, bidmachine-android/references/error-codes.md, bidmachine-android/references/privacy.md, bidmachine-android/references/revenue.md, bidmachine-android/scripts/verify_integration.py]
+  - file: bidmachine-ios/SKILL.md
+    name: bidmachine-ios
+    method: searched
+    source: https://github.com/bidmachine/bidmachine-sdk-agents/blob/main/skills/bidmachine-ios/SKILL.md
+    license: Apache-2.0
+    api: BidMachine Plus iOS SDK (BidMachinePlus)
+    references: [bidmachine-ios/references/ad-units.md, bidmachine-ios/references/distribution.md, bidmachine-ios/references/error-codes.md, bidmachine-ios/references/privacy.md, bidmachine-ios/references/revenue.md, bidmachine-ios/scripts/verify_integration.py]
+  - file: bidmachine-unity/SKILL.md
+    name: bidmachine-unity
+    method: searched
+    source: https://github.com/bidmachine/bidmachine-sdk-agents/blob/main/skills/bidmachine-unity/SKILL.md
+    license: Apache-2.0
+    api: BidMachine Plus Unity plugin (com.bidmachine.plus) — First Look mode
+    references: [bidmachine-unity/references/controller-reference.md, bidmachine-unity/references/first-look.md, bidmachine-unity/references/install.md, bidmachine-unity/references/mcp-setup.md, bidmachine-unity/scripts/verify_integration.py]
+  - file: bidmachine-io-manage-placements.md
+    name: Manage placements on a BidMachine source
+    method: generated
+    api: openapi/bidmachine-io-placement-management-openapi.yml
+    operations: [getAccessToken, listPlacements, createPlacement, updatePlacement, deletePlacement]
+  - file: bidmachine-io-pull-reports.md
+    name: Pull SSP, bidder and P2P revenue reports
+    method: generated
+    api: openapi/bidmachine-io-reporting-openapi.yml
+    operations: [retrieveSspReportData, retrieveBidderReportData, retrieveP2pRevenueReportData]
+provider_install:
+  claude_code: ['/plugin marketplace add bidmachine/bidmachine-sdk-agents', '/plugin install bidmachine-sdk-agents@bidmachine']
+  gemini_cli: ['gemini extensions install https://github.com/bidmachine/bidmachine-sdk-agents']
+  agent_skills_cli: ['npx skills add bidmachine/bidmachine-sdk-agents']
+  license_file: LICENSE-bidmachine-sdk-agents

@@ -1,23 +1,242 @@
 aid: bidmachine-io
 name: BidMachine
-description: 'BidMachine is a company surfaced via the API Evangelist harvest backlog (source: a2a-registry)
-  and added to the network as a stub for full-pipeline profiling.'
+description: >-
+  BidMachine is a mobile in-app ad exchange and monetization platform (BidMachine, Inc., McLean,
+  Virginia; spun out of the Appodeal/Stack group) that sells publishers' mobile inventory to demand
+  partners through real-time OpenRTB 2.5 auctions. Publishers integrate the BidMachine SDK (Android,
+  iOS, Unity) or the newer unified BidMachine Plus mediation SDK, or plug BidMachine into AppLovin MAX,
+  Unity LevelPlay, AdMob/GAM or TopOn as a bidding adapter; DSPs and agencies buy through the exchange.
+  Its public APIs are a Placement Management API (create, list, update and delete placements on an ad
+  source with a short-lived bearer token) and a Reporting API (SSP, bidder and P2P revenue reports as
+  NDJSON or CSV over HTTP Basic), both documented as OpenAPI on developers.bidmachine.io, plus the
+  OpenRTB auction endpoints (api-eu / api-us / api-apac) for in-house bidders and supply partners.
+image: https://cdn.prod.website-files.com/687616911a76518b8c28e98a/689e12a964ac545560447d4d_BM%20Sign%20256px.svg
 url: https://raw.githubusercontent.com/api-evangelist/bidmachine-io/refs/heads/main/apis.yml
 x-type: company
 x-source: harvest:a2a-registry
-x-tier: stub
-x-tier-reason: harvest
+x-tier: profiled
+x-tier-reason: 'enrichment pass 2026-09-19: full contract discovery run; two OpenAPI contracts recovered from developers.bidmachine.io, provider-published agent skills, SDK packages'
+x-domain: bidmachine.io
+x-website-note: >-
+  The marketing site moved from bidmachine.io to www.bidmachine.com (bidmachine.io/* 301s to
+  www.bidmachine.io/* which 301s to www.bidmachine.com/*); docs, dashboard, API and auction hosts
+  remain on bidmachine.io, and the Terms of Service still name bidmachine.io as the Website.
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
 tags:
-- Company
-apis: []
+  - Advertising
+  - Ad Tech
+  - Mobile Advertising
+  - Ad Exchange
+  - Ad Mediation
+  - In-App Bidding
+  - OpenRTB
+  - App Monetization
+  - Programmatic Advertising
+  - Mobile SDK
+  - Reporting
+  - Company
+apis:
+  - name: BidMachine Placement Management API
+    description: >-
+      Lets publishers create, list, update and delete placements on the ad sources (apps) they own
+      programmatically, without the dashboard. Authenticate with HTTP Basic (dashboard login and
+      password) at POST /auth to obtain a short-lived bearer token; all placement operations are scoped
+      to sources owned by the authenticated publisher (403 otherwise). Placement ids are generated
+      server-side from name and bundle.
+    humanURL: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+    baseURL: https://api-eu.bidmachine.io/api/v1
+    tags:
+      - Advertising
+      - Ad Exchange
+      - App Monetization
+      - Placements
+    properties:
+      - type: OpenAPI
+        url: openapi/bidmachine-io-placement-management-openapi.yml
+      - type: Documentation
+        url: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+      - type: APIReference
+        url: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+      - type: Authentication
+        url: authentication/bidmachine-io-authentication.yml
+      - type: Conventions
+        url: conventions/bidmachine-io-conventions.yml
+      - type: ErrorCatalog
+        url: errors/bidmachine-io-problem-types.yml
+      - type: DataModel
+        url: data-model/bidmachine-io-data-model.yml
+      - type: Overlay
+        url: overlays/bidmachine-io-placement-management-overlay.yaml
+      - type: AgentSkill
+        url: skills/bidmachine-io-manage-placements.md
+  - name: BidMachine Reporting API
+    description: >-
+      Reporting data for SSP (publisher) accounts and demand partners: SSP performance, bidder spend
+      and P2P revenue reports streamed as NDJSON or CSV for a start/end date range with selectable
+      dimensions. HTTP Basic authentication; maximum window 45 days (2 years for P2P revenue); rate
+      limit 6 requests per minute signalled with a 429 and an ad-exchange-warn-message header.
+    humanURL: https://developers.bidmachine.io/api/bidmachine-reporting-api
+    baseURL: https://api-eu.bidmachine.io/api/v1
+    tags:
+      - Advertising
+      - Reporting
+      - Analytics
+      - Revenue
+    properties:
+      - type: OpenAPI
+        url: openapi/bidmachine-io-reporting-openapi.yml
+      - type: Documentation
+        url: https://developers.bidmachine.io/api/bidmachine-reporting-api
+      - type: APIReference
+        url: https://developers.bidmachine.io/api/retrieve-ssp-report-data
+      - type: Documentation
+        name: Reporting API (legacy docs)
+        url: https://docs.bidmachine.io/docs/reporting-api
+      - type: Authentication
+        url: authentication/bidmachine-io-authentication.yml
+      - type: RateLimits
+        url: rate-limits/bidmachine-io-rate-limits.yml
+      - type: ErrorCatalog
+        url: errors/bidmachine-io-problem-types.yml
+      - type: Overlay
+        url: overlays/bidmachine-io-reporting-overlay.yaml
+      - type: AgentSkill
+        url: skills/bidmachine-io-pull-reports.md
+  - name: BidMachine OpenRTB Auction API
+    description: >-
+      OpenRTB 2.5 bid endpoint for in-house bidders and supply partners integrating through the
+      BidMachine SDK: one impression per bid request, first-price auction, USD only, regional
+      endpoints in the EU, US and APAC keyed by source id. The demand-side (DSP) integration uses the
+      same OpenRTB 2.3/2.5 protocol with BidMachine calling the DSP's endpoint. Published as prose
+      field specifications and JSON examples, not as a machine-readable contract.
+    humanURL: https://developers.bidmachine.io/sdk/general/bidder
+    baseURL: https://api-eu.bidmachine.io/auction/prebid/
+    tags:
+      - Advertising
+      - OpenRTB
+      - Ad Exchange
+      - Real-Time Bidding
+    properties:
+      - type: Documentation
+        url: https://developers.bidmachine.io/sdk/general/bidder
+      - type: APIReference
+        name: Bid request specification (SSP)
+        url: https://developers.bidmachine.io/sdk/ssp/request/specification
+      - type: APIReference
+        name: Bid request specification (DSP)
+        url: https://developers.bidmachine.io/dsp/bid-request/specification
+      - type: Documentation
+        name: Demand partner (DSP) getting started
+        url: https://developers.bidmachine.io/dsp/overview
+      - type: Sandbox
+        url: sandbox/bidmachine-io-sandbox.yml
+      - type: Sandbox
+        name: OpenRTB testing environment
+        url: https://developers.bidmachine.io/sdk/ssp/testing
 maintainers:
-- FN: Kin Lane
-  email: kin@apievangelist.com
-- FN: APIs.json
-  email: info@apis.io
+  - FN: Kin Lane
+    email: kin@apievangelist.com
+  - FN: APIs.json
+    email: info@apis.io
 common:
-- type: Website
-  url: https://bidmachine.io/
+  - type: AgenticAccess
+    url: agentic-access/bidmachine-io-agentic-access.yml
+  - type: DomainSecurity
+    url: security/bidmachine-io-domain-security.yml
+  - type: Website
+    url: https://bidmachine.io/
+  - type: DeveloperPortal
+    url: https://developers.bidmachine.io/
+  - type: Documentation
+    url: https://developers.bidmachine.io/
+  - type: Documentation
+    name: BidMachine Plus mediation docs
+    url: https://mediation-docs.bidmachine.io/
+  - type: Documentation
+    name: Legacy SDK docs (v1.0)
+    url: https://docs.bidmachine.io/docs/getting-started
+  - type: APIReference
+    url: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+  - type: GettingStarted
+    url: https://developers.bidmachine.io/sdk/overview
+  - type: Blog
+    url: https://www.bidmachine.com/blog
+  - type: GitHubOrganization
+    url: https://github.com/bidmachine
+  - type: SignUp
+    url: https://www.bidmachine.com/sign-up
+  - type: Login
+    url: https://dashboard.bidmachine.io/sign-in
+  - type: TermsOfService
+    url: https://www.bidmachine.com/terms-of-service
+  - type: PrivacyPolicy
+    url: https://www.bidmachine.com/privacy-policy
+  - type: Leadership
+    url: https://www.bidmachine.com/about-bidmachine
+  - type: StatusPage
+    url: https://bidmachine.statuspage.io/
+  - type: Security
+    url: https://www.bidmachine.com/responsible-vulnerability-disclosure-policy
+  - type: VulnerabilityDisclosure
+    url: security/bidmachine-io-vulnerability-disclosure.yml
+  - type: ChangeLog
+    url: changelog/bidmachine-io-changelog.yml
+  - type: ChangeLog
+    name: Android SDK changelog
+    url: https://developers.bidmachine.io/sdk/general/android/android-changelog
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/bidmachine
+  - type: LLMsTxt
+    url: llms/bidmachine-io-llms.txt
+  - type: LLMsTxt
+    name: llms.txt (developers.bidmachine.io)
+    url: https://developers.bidmachine.io/llms.txt
+  - type: LLMsTxt
+    name: llms.txt (docs.bidmachine.io)
+    url: https://docs.bidmachine.io/llms.txt
+  - type: Packages
+    url: packages/bidmachine-io-packages.yml
+  - type: SDKs
+    url: packages/bidmachine-io-packages.yml
+  - type: AgentSkill
+    url: skills/_index.yml
+  - type: AgentSkill
+    name: BidMachine Plus SDK Agents (provider-published)
+    url: https://github.com/bidmachine/bidmachine-sdk-agents
+  - type: MCPServer
+    url: mcp/bidmachine-io-mcp.yml
+  - type: Conformance
+    url: conformance/bidmachine-io-conformance.yml
+  - type: ErrorCatalog
+    url: errors/bidmachine-io-sdk-error-codes.yml
+  - type: Lifecycle
+    url: lifecycle/bidmachine-io-lifecycle.yml
+  - type: Sandbox
+    url: sandbox/bidmachine-io-sandbox.yml
+  - type: Conventions
+    url: conventions/bidmachine-io-conventions.yml
+  - type: Plans
+    url: plans/bidmachine-io-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/bidmachine-io-rate-limits.yml
+  - type: DataModel
+    url: data-model/bidmachine-io-data-model.yml
+  - type: WellKnownProbe
+    url: well-known/bidmachine-io-well-known.yml
+  - type: RegulatoryPosture
+    url: regulatory/bidmachine-io-regulatory-posture.yml
+  - type: IncidentNotification
+    url: https://www.bidmachine.com/dpa
+  - type: DataSubjectRequest
+    url: https://www.bidmachine.com/privacy-policy
+  - type: DataResidency
+    url: https://developers.bidmachine.io/dsp/requirements
+  - type: DataProcessingAgreement
+    url: https://www.bidmachine.com/dpa
+x-enrichment:
+  date: '2026-09-19'
+  status: enriched
+  artifacts_added: 52
+  pass: local-v3

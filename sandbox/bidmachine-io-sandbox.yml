@@ -1,0 +1,32 @@
+generated: '2026-09-19'
+method: searched
+source: https://developers.bidmachine.io/sdk/ssp/testing
+description: >-
+  BidMachine's published test surface. There is no sandbox for the Placement Management or
+  Reporting REST APIs — they run against the production account with dashboard credentials. The
+  documented testing environment is for the OpenRTB auction integration: a test auction endpoint
+  and a recommended test bid floor. The dashboard's Advanced Reporting also exposes a "Test Mode"
+  dimension on the Ad Request Report (https://developers.bidmachine.io/dashboard/advanced-reporting),
+  which is how test traffic is separated in reporting. Values below are verbatim from the docs.
+docs:
+  - https://developers.bidmachine.io/sdk/ssp/testing
+  - https://developers.bidmachine.io/dashboard/advanced-reporting
+modes:
+  - name: production
+    notes: Placement Management and Reporting APIs have no test mode; credentials are the dashboard login/password.
+  - name: openrtb-testing
+    endpoint: https://api.appodealx.com/ssp/1/auction
+    notes: >-
+      "Use the following testing endpoint for bid requests" — the host is appodealx.com, the legacy AppodealX
+      exchange brand BidMachine grew out of (BidMachine's own DSP DPA is titled "DPA ... AppodealX v.1.5"),
+      named by BidMachine's own docs. "Fill rate may not reach 100% in the testing environment."
+test_values:
+  bid_floor:
+    value: 0.01
+    unit: CPM (USD)
+    note: '"When testing, set the minimum bid floor to 0.01 (CPM)."'
+production_endpoints_for_contrast:
+  - https://api-eu.bidmachine.io/auction/prebid/${source_id}
+  - https://api-us.bidmachine.io/auction/prebid/${source_id}
+  - https://api-apac.bidmachine.io/auction/prebid/${source_id}
+reporting_test_mode_dimension: Test Mode (Ad Request Report dimension in the dashboard)

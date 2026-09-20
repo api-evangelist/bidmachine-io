@@ -1,0 +1,117 @@
+{
+  "skill_name": "bidmachine-android",
+  "notes": "Feature-first eval set covering the skill's full capability surface (S2S out of scope this iteration). Each prompt is integrated into a fresh copy of a blank Compose Android app (fixtures/android-app) wired (via its own settings.gradle.kts) to resolve io.bidmachine.plus:sdk:0.1.0 from the public BidMachine repo, with org.bidon:* mediation transitives from the bidon repo — those repos are the test-app environment, not something the skill adds. The headline assertion for every feature eval (0–4) is that the produced integration COMPILES (./gradlew :app:assembleDebug). Mediator is never an organizing axis and never a pass/fail gate — only eval 4 (external AdMob mediation) expects withMediator, and only as analytics. Version is pinned in the skill, so prompts give no version. Evals 5 (checklist-step-order), 6 (explore-project-first) and 7 (ask-questions-before-editing) are process checks graded from the run transcript. eval 5 verifies the agent follows the Checklist workflow order — inspects the project before its first edit (step 1) and runs a build/verify after integrating (step 8); eval 6 verifies it inspects the project before editing; eval 7 (deliberately under-specified, no compile gate) verifies it asks clarifying questions before editing. (Literal task-list creation isn't observable when the run is a dispatched subagent — those execute directly without TaskCreate/TodoWrite — so eval 5 measures step order, not task objects.) Because the Checklist mandates asking clarifying questions first, integration evals (0–6) are run with those answers supplied so headless runs don't stall; eval 7 gets none, to test the asking itself.",
+  "evals": [
+    {
+      "id": 0,
+      "name": "basic-interstitial",
+      "prompt": "I'm adding monetization to my Android app (Kotlin + Jetpack Compose). I want a single full-screen interstitial ad shown between levels using BidMachine Plus. Set up the dependency, initialize the SDK, and load and show one interstitial. My app key is a1b2c3d4.",
+      "expected_output": "io.bidmachine.plus:sdk dependency + bidmachine repo; INTERNET permission + network security config; BidMachine.instance(...).initialize(...); InterstitialAd loaded/shown/destroyed; real app key a1b2c3d4. Compiles.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "Integration compiles (./gradlew :app:assembleDebug BUILD SUCCESSFUL)"},
+        {"id": "dep", "text": "io.bidmachine.plus:sdk dependency declared (string or version-catalog form)"},
+        {"id": "internet-perm", "text": "INTERNET permission present in AndroidManifest"},
+        {"id": "init", "text": "BidMachine.instance(...) + initialize(...) called"},
+        {"id": "interstitial-wired", "text": "InterstitialAd created, loaded and shown"},
+        {"id": "real-appkey", "text": "Real app key a1b2c3d4 used; no YOUR_APP_KEY placeholder"}
+      ]
+    },
+    {
+      "id": 1,
+      "name": "rewarded-revenue-errors",
+      "prompt": "I've integrated BidMachine Plus and now I need a rewarded video that grants the user coins when they finish watching. I also want to forward the ad revenue to my analytics, and log load failures with their error codes. App key: rwd-key-77.",
+      "expected_output": "RewardedAd with onAdRewarded granting the reward; onAdRevenuePaid forwarding adInfo.price/precision to analytics; onAdLoadFailed reading BidMachineError.code (CODE_* constants); real app key. Compiles.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "Integration compiles (./gradlew :app:assembleDebug BUILD SUCCESSFUL)"},
+        {"id": "rewarded-wired", "text": "RewardedAd created and loaded"},
+        {"id": "on-rewarded", "text": "onAdRewarded(adInfo, reward) override present (reward granted)"},
+        {"id": "revenue", "text": "onAdRevenuePaid used to report adInfo.price to analytics"},
+        {"id": "error-codes", "text": "Load failure reads error.code / references BidMachineError.CODE_* constants"},
+        {"id": "real-appkey", "text": "Real app key rwd-key-77 used; no placeholder"}
+      ]
+    },
+    {
+      "id": 2,
+      "name": "banner-mrec-positioned",
+      "prompt": "Add a BidMachine Plus banner to my Android app. I want a 300x250 MREC anchored to the bottom of the screen, and I'd also like to know how to attach the banner directly into a layout container. App key: banner-key-22.",
+      "expected_output": "BannerAd with BannerAdSize.MREC; positioned overlay via show(BannerPosition.HorizontalBottom)/hide() (with the io.bidmachine.plus.show/hide extension imports); plus attaching the BannerAd view into a container (addView); real app key. Compiles.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "Integration compiles (./gradlew :app:assembleDebug BUILD SUCCESSFUL)"},
+        {"id": "banner-wired", "text": "BannerAd created and loaded"},
+        {"id": "mrec-size", "text": "BannerAdSize.MREC used"},
+        {"id": "positioned", "text": "Positioned overlay via show(BannerPosition...) and/or hide()"},
+        {"id": "real-appkey", "text": "Real app key banner-key-22 used; no placeholder"}
+      ]
+    },
+    {
+      "id": 3,
+      "name": "privacy-coppa-gdpr-ccpa",
+      "prompt": "My Android app is a kids' game (child-directed, under 13) and we also have users in the EU and California. Integrate BidMachine Plus with an interstitial and make sure we handle privacy correctly for COPPA, GDPR, and CCPA. App key: kids-key-09.",
+      "expected_output": "sdk.regulations.setCoppa(true) for the child-directed app; GDPR/CCPA left to the CMP auto-read (NO manual consent boolean API invented); interstitial wired; real app key. Compiles.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "Integration compiles (./gradlew :app:assembleDebug BUILD SUCCESSFUL)"},
+        {"id": "coppa", "text": "sdk.regulations.setCoppa(true) called for the child-directed app"},
+        {"id": "no-manual-consent", "text": "No invented manual GDPR/CCPA consent API (setHasUserConsent/setConsent/setDoNotSell) — left to CMP auto-read"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired"},
+        {"id": "real-appkey", "text": "Real app key kids-key-09 used; no placeholder"}
+      ]
+    },
+    {
+      "id": 4,
+      "name": "admob-mediation-interstitial",
+      "prompt": "We already run Google AdMob as our mediation. Add BidMachine Plus as a bidding source feeding into AdMob, with an interstitial between screens. App key: admob-key-55.",
+      "expected_output": "IntegrationType.AdNetwork with withMediator(MediatorName.ADMOB) (analytics only — integration still compiles without depending on it); interstitial wired; real app key. Compiles.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "Integration compiles (./gradlew :app:assembleDebug BUILD SUCCESSFUL)"},
+        {"id": "adnetwork", "text": "Initialized with IntegrationType.AdNetwork"},
+        {"id": "mediator-admob", "text": "withMediator(MediatorName.ADMOB) declared (analytics for the external AdMob mediation)"},
+        {"id": "interstitial-wired", "text": "InterstitialAd wired"},
+        {"id": "real-appkey", "text": "Real app key admob-key-55 used; no placeholder"}
+      ]
+    },
+    {
+      "id": 5,
+      "name": "checklist-step-order",
+      "prompt": "Integrate BidMachine Plus into my Android app (Kotlin + Compose) with a single interstitial. App key: chk-key-01.",
+      "expected_output": "The agent follows the skill's Checklist workflow order: it inspects the project before editing (step 1), integrates, then runs a build/verify after integrating (step 8). Produces a compiling interstitial integration with the real app key.",
+      "files": [],
+      "assertions": [
+        {"id": "explores-first", "text": "The run inspected project files (Read/Grep/Glob) before its first Write/Edit — Checklist step 1. Graded from the run transcript."},
+        {"id": "verifies-at-end", "text": "The run ran a build / verify_integration.py AFTER integrating — Checklist step 8. Graded from the run transcript."},
+        {"id": "compiles", "text": "Integration compiles (./gradlew :app:assembleDebug BUILD SUCCESSFUL)"},
+        {"id": "interstitial-wired", "text": "InterstitialAd created, loaded and shown"},
+        {"id": "real-appkey", "text": "Real app key chk-key-01 used; no placeholder"}
+      ]
+    },
+    {
+      "id": 6,
+      "name": "explore-project-first",
+      "prompt": "Add a BidMachine Plus rewarded ad to my existing Android app. App key: exp-key-02.",
+      "expected_output": "The agent's first actions inspect the project — the app-level build.gradle(.kts), AndroidManifest.xml, the Application/Activity classes, any existing ad setup, recent commits, and any documented requirements/goals — before writing any code, matching Checklist step 1.",
+      "files": [],
+      "assertions": [
+        {"id": "explores-first", "text": "Before any Write/Edit, the run inspected the project — build.gradle(.kts), AndroidManifest.xml, app source, recent commits, and any requirements/goals docs. Graded from the run transcript."},
+        {"id": "compiles", "text": "Integration compiles (./gradlew :app:assembleDebug BUILD SUCCESSFUL)"},
+        {"id": "rewarded-wired", "text": "RewardedAd created and loaded"},
+        {"id": "real-appkey", "text": "Real app key exp-key-02 used; no placeholder"}
+      ]
+    },
+    {
+      "id": 7,
+      "name": "ask-questions-before-editing",
+      "prompt": "I want to monetize my Android app with BidMachine Plus.",
+      "expected_output": "The prompt is under-specified (no app key, formats, or demand mode), so before writing or editing any code the agent asks the user clarifying questions — one at a time — to establish app key, ad formats, demand mode, and privacy needs. It does not start editing on assumptions. (No compile gate: asking, not integrating, is the correct outcome here.)",
+      "files": [],
+      "assertions": [
+        {"id": "asks-before-editing", "text": "The run asked the user clarifying questions (app key, formats, demand mode, privacy) before any Write/Edit. Graded from the run transcript."},
+        {"id": "one-at-a-time", "text": "Clarifying questions were asked one at a time, not as a single dump."},
+        {"id": "no-premature-edits", "text": "No code was written or edited before the questions were asked."}
+      ]
+    }
+  ]
+}

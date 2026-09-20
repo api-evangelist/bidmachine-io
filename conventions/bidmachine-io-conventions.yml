@@ -1,0 +1,98 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://developers.bidmachine.io/api/bidmachine-placement-management-api, https://developers.bidmachine.io/api/bidmachine-reporting-api,
+  https://docs.bidmachine.io/docs/reporting-api.md, openapi/bidmachine-io-placement-management-openapi.yml,
+  openapi/bidmachine-io-reporting-openapi.yml, live unauthenticated probes of https://api-eu.bidmachine.io/api/v1 (2026-09-19)
+description: >-
+  Cross-cutting request/response semantics of BidMachine's two REST APIs (Placement Management and
+  Reporting), which share one base URL. Small surface: eight operations, two auth schemes, JSON
+  bodies, NDJSON/CSV report streams, no pagination, no idempotency keys, no request-id header, no
+  documented reversal path. The OpenRTB auction surface is a separate protocol and is not covered
+  here beyond its endpoints.
+base_url: https://api-eu.bidmachine.io/api/v1
+api_style: REST over HTTPS; JSON request bodies; JSON responses (reports stream NDJSON or CSV)
+regions:
+  rest_api: EU only (api-eu.bidmachine.io) — the only host either contract names
+  auction: [api-eu.bidmachine.io, api-us.bidmachine.io, api-apac.bidmachine.io]
+
+authentication:
+  scheme: >-
+    Reporting API — HTTP Basic with the SSP account login/password on every call. Placement Management API —
+    POST /auth with HTTP Basic (the same dashboard login/password) returns {token, expires}; then Authorization:
+    Bearer <token> on every placement call. Tokens are short-lived; a 401 means re-authenticate and retry.
+  docs: https://developers.bidmachine.io/api/get-access-token
+  detail: authentication/bidmachine-io-authentication.yml
+  observed: 401 on the reporting path carries WWW-Authenticate Basic realm="Reporting API"
+
+idempotency:
+  coverage: none
+  supported: false
+  mechanism: null
+  applies_to: null
+  notes: >-
+    No Idempotency-Key header or equivalent is documented or present in either contract. PUT
+    /publisher/sources/{sourceId}/placements replaces the whole placement (semantically idempotent
+    by method), and POST create derives the id from name+bundle so a repeat create returns 409 rather
+    than a duplicate — but neither is a replay-protection contract, so coverage is recorded as none.
+
+reversibility:
+  grade: none
+  documented: false
+  write_operations:
+    - {operationId: createPlacement, reversal: deletePlacement, window: null, note: A created placement can be deleted; nothing documents an undo of the create itself or a restore after delete.}
+    - {operationId: updatePlacement, reversal: null, window: null, note: Full replacement; no version history or rollback is documented.}
+    - {operationId: deletePlacement, reversal: null, window: null, note: 204 with no body; no restore, soft-delete or grace period is documented.}
+    - {operationId: getAccessToken, reversal: null, window: null, note: Token expiry is returned (expires) but no revoke endpoint exists.}
+  notes: >-
+    No cancel/undo/restore/rollback operation and no stated window exist anywhere in the contracts or docs,
+    so reversibility is graded none. The reporting API is read-only (na).
+
+pagination:
+  style: none
+  notes: >-
+    listPlacements returns the full array for a source. Report endpoints are bounded by start/end dates
+    (max 45 days; p2p-revenue up to 2 years) and stream every row as NDJSON or CSV — no page or cursor.
+
+field_selection:
+  mechanism: fields query parameter (comma-separated, style=form explode=false) on the three report endpoints selects dimensions/measures
+  docs: https://developers.bidmachine.io/api/retrieve-ssp-report-data
+  defaults: date,country,publisher_id,app_name,app_bundle,platform,ad_type,impressions,clicks,ctr,ecpm,revenue (legacy docs)
+
+response_formats:
+  reports:
+    - {format: ndjson, content_type: application/x-ndjson, param: format=json}
+    - {format: csv, content_type: text/csv, param: format=csv (default in legacy docs), header_toggle: csv_header=0|1}
+  placements: application/json
+
+metadata: none
+request_tracing:
+  request_id_header: null
+  notes: No request-id header is documented; observed responses carry only x-envoy-upstream-service-time.
+
+versioning:
+  scheme: uri-path
+  current: /api/v1
+  detail: lifecycle/bidmachine-io-lifecycle.yml
+
+error_envelope:
+  shape: '{"message": "<string>"}'
+  content_type: application/json
+  problem_details: false
+  detail: errors/bidmachine-io-problem-types.yml
+
+rate_limit_signaling:
+  status: 429
+  headers: [ad-exchange-warn-message]
+  retry_after: false
+  documented_limit: 6 requests per minute (Reporting API)
+  detail: rate-limits/bidmachine-io-rate-limits.yml
+
+long_running_requests:
+  notes: Report generation takes 10-60 seconds; request timeout can be up to 300 seconds — clients should set a >=300s read timeout rather than poll.
+
+related:
+  errors: errors/bidmachine-io-problem-types.yml
+  lifecycle: lifecycle/bidmachine-io-lifecycle.yml
+  authentication: authentication/bidmachine-io-authentication.yml
+  rate_limits: rate-limits/bidmachine-io-rate-limits.yml

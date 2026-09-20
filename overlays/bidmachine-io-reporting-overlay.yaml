@@ -1,0 +1,25 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for BidMachine Reporting API
+  version: 1.0.0
+  description: >-
+    Records what API Evangelist added when assembling openapi/bidmachine-io-reporting-openapi.yml from the
+    provider's compiled per-operation objects (openapi/_original/bidmachine-io-reporting-api-operations.json).
+    The provider's objects carry no operationId, tags or summary; every other field is verbatim.
+extends: openapi/bidmachine-io-reporting-openapi.yml
+x-generated: '2026-09-19'
+x-method: generated
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-source: https://developers.bidmachine.io/api/bidmachine-reporting-api
+      x-apievangelist-harvested: '2026-09-19'
+      x-legacy-docs: https://docs.bidmachine.io/docs/reporting-api
+  - target: $.paths['/report/ssp'].get
+    update: {operationId: retrieveSspReportData, summary: Retrieve SSP Report Data, tags: [Reporting]}
+  - target: $.paths['/report/bidder'].get
+    update: {operationId: retrieveBidderReportData, summary: Retrieve Bidder Report Data, tags: [Reporting]}
+  - target: $.paths['/report/p2p-revenue'].get
+    update: {operationId: retrieveP2pRevenueReportData, summary: Retrieve P2P Revenue Report Data, tags: [Reporting]}
+  - target: $.tags
+    update: [{name: Reporting}]

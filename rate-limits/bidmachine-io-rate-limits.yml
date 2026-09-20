@@ -1,0 +1,52 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: BidMachine
+providerId: bidmachine-io
+created: '2026-09-19'
+modified: '2026-09-19'
+generated: '2026-09-19'
+method: searched
+limit_count: 1
+tags:
+  - Rate Limiting
+  - Reporting
+description: >-
+  BidMachine documents one rate limit, on the Reporting API: 6 requests per minute, enforced with a
+  429 whose `ad-exchange-warn-message` response header carries a human-readable retry hint (no
+  Retry-After, no X-RateLimit-* counters). The Placement Management API documents no limit. Report
+  requests are also bounded by window (45 days; 2 years for the P2P revenue report) and by
+  generation time (10-60 s, request timeout up to 300 s), which are recorded as constraints rather
+  than limits.
+sources:
+  - https://developers.bidmachine.io/api/bidmachine-reporting-api
+  - https://developers.bidmachine.io/api/retrieve-ssp-report-data
+  - https://docs.bidmachine.io/docs/reporting-api.md
+headers:
+  warning: ad-exchange-warn-message
+  warningExample: "You've been requesting too much. Please try again in 5 seconds."
+  retryAfter: null
+  remaining: null
+  limit: null
+responseCodes:
+  throttled: 429
+limits:
+  - name: Reporting API requests
+    scope: account
+    metric: requests_per_minute
+    limit: 6
+    timeFrame: minute
+    burst: null
+    appliesTo:
+      - openapi/bidmachine-io-reporting-openapi.yml#retrieveSspReportData
+      - openapi/bidmachine-io-reporting-openapi.yml#retrieveBidderReportData
+      - openapi/bidmachine-io-reporting-openapi.yml#retrieveP2pRevenueReportData
+    source: https://developers.bidmachine.io/api/bidmachine-reporting-api
+constraints:
+  - {name: Report window (SSP, bidder), value: 45 days maximum, source: https://developers.bidmachine.io/api/bidmachine-reporting-api}
+  - {name: Report window (P2P revenue), value: 2 years maximum, source: https://developers.bidmachine.io/api/retrieve-p-2-p-revenue-report-data}
+  - {name: Report generation time, value: 10-60 seconds depending on server load, source: https://developers.bidmachine.io/api/bidmachine-reporting-api}
+  - {name: Request timeout, value: up to 300 seconds, source: https://developers.bidmachine.io/api/bidmachine-reporting-api}
+undocumented:
+  - Placement Management API (no published limit)
+  - OpenRTB auction endpoints (tmax >1000ms is a request field, not a rate limit)

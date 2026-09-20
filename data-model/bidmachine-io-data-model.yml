@@ -1,0 +1,63 @@
+generated: '2026-09-19'
+method: derived
+source: >-
+  Derived from openapi/bidmachine-io-placement-management-openapi.yml (Placement / PlacementInput schemas,
+  sourceId path parameter) and openapi/bidmachine-io-reporting-openapi.yml (report row schemas), plus the
+  dashboard docs (https://developers.bidmachine.io/dashboard/source, /dashboard/placement) for the
+  Source concept the API only references by id.
+docs: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+notation: relationships use has_one / has_many / belongs_to with the foreign-key field name; direction is from the entity that owns the reference.
+entities:
+  - name: Publisher
+    domain: account
+    description: The authenticated dashboard account (login/password). Owns sources; requests for foreign sources return 403. Appears as publisher_id in reports.
+  - name: Source
+    domain: inventory
+    id_field: sourceId (integer)
+    description: An ad source — an app registered in the BidMachine dashboard. Referenced only by id in the API path; managed in the dashboard.
+  - name: Placement
+    domain: inventory
+    id_field: id (string, server-generated from name+bundle)
+    description: >-
+      An ad placement on a source: name, platform (android|ios), bundle, adType (banner|interstitial|rewarded|native),
+      placementType (bidding|waterfall), hva (high-value audience flag), optional pricefloor (USD CPM).
+    schema: openapi/bidmachine-io-placement-management-openapi.yml#/components/schemas/Placement
+  - name: AccessToken
+    domain: auth
+    description: Short-lived bearer token (token, expires) issued by POST /auth against Basic credentials.
+  - name: SspReportRow
+    domain: reporting
+    description: >-
+      One NDJSON/CSV row of the SSP report — dimensions date, country, publisher_id, app_name, app_bundle, platform,
+      ad_type, demand_partner, payer, is_paas, exchange_placement_id, exchange_placement_name, coppa; measures
+      impressions, clicks, ctr, ecpm, revenue.
+  - name: BidderReportRow
+    domain: reporting
+    description: >-
+      One row of the bidder (demand) report — agency_id, agency_name, is_paas, bidder_id, publisher_id, source_id,
+      seat_id, adomain, country, app_bundle, platform, ad_type, bidder_endpoint; measures impressions, clicks, ctr,
+      spend, p2p_paas_fee, seller_income.
+  - name: P2pRevenueReportRow
+    domain: reporting
+    description: >-
+      One row of the P2P revenue report — date, payer, is_paas, agency_id, agency_name, demand_partner; measures
+      estimated_gross_spend, estimated_income, expected_payment, bm_fee.
+relationships:
+  - {from: Publisher, to: Source, kind: has_many, via: sourceId (ownership enforced with 403)}
+  - {from: Source, to: Placement, kind: has_many, via: sourceId}
+  - {from: Placement, to: Source, kind: belongs_to, via: sourceId}
+  - {from: Publisher, to: AccessToken, kind: has_many, via: Basic credentials -> POST /auth}
+  - {from: SspReportRow, to: Publisher, kind: belongs_to, via: publisher_id}
+  - {from: SspReportRow, to: Placement, kind: belongs_to, via: exchange_placement_id}
+  - {from: BidderReportRow, to: Source, kind: belongs_to, via: source_id}
+  - {from: BidderReportRow, to: Publisher, kind: belongs_to, via: publisher_id}
+identifiers:
+  - entity: Placement
+    field: id
+    format: opaque base64url-looking string generated server-side from name and bundle (example dGVzdC1pZA); collisions return 409
+  - entity: Source
+    field: sourceId
+    format: integer
+  - entity: Publisher
+    field: publisher_id
+    format: integer (reports)

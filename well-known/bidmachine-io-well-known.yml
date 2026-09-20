@@ -1,0 +1,489 @@
+generated: '2026-09-19'
+method: probed
+description: 'Closed-list /.well-known/ probe (RFC 9116 security.txt, OIDC, RFC 8414, RFC 9728, api-catalog, ai-plugin,
+  UCP, ACP, AAuth, APIs.json at both locations, A2A agent-card/agent) on every host the record knows: the apex +
+  www of both the .io and .com domains (the marketing site now lives on www.bidmachine.com), the three docs hosts
+  (docs., developers., mediation-docs.), the API/auction hosts api-eu/api-us/api-apac/api and the dashboard SPA.
+  Each host also received one request to a path that cannot exist as a path-echo / soft-404 control. RESULT: no
+  host serves any well-known document. dashboard.bidmachine.io returns 200 text/html for everything including the
+  control, so it is a catch-all and none of its 200s count. No WellKnown / SecurityTxt pointer is emitted.'
+hit_count: 0
+hosts:
+- host: https://bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/ai-plugin.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/ai-plugin.json
+  - path: /.well-known/api-catalog
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/api-catalog
+  - path: /.well-known/oauth-authorization-server
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/oauth-authorization-server
+  - path: /.well-known/security.txt
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/security.txt
+  - path: /.well-known/ucp.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/ucp.json
+  - path: /.well-known/api-catalog.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/api-catalog.json
+  - path: /.well-known/oauth-protected-resource
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/oauth-protected-resource
+  - path: /.well-known/openid-configuration
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/openid-configuration
+  - path: /apis.json
+    status: 301
+    redirect: https://www.bidmachine.io/apis.json
+  - path: /.well-known/aauth-resource.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/aauth-resource.json
+  - path: /.well-known/agent-card.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/agent-card.json
+  - path: /.well-known/apis.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/apis.json
+  - path: /.well-known/agent.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/agent.json
+  - path: /apis.yml
+    status: 301
+    redirect: https://www.bidmachine.io/apis.yml
+  - path: /.well-known/acp.json
+    status: 301
+    redirect: https://www.bidmachine.io/.well-known/acp.json
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 301
+    result: passed
+  note: Apex 301s every path to www.bidmachine.io, which 404s them (and 301s /apis.json,/apis.yml on to www.bidmachine.com,
+    which 404s).
+- host: https://www.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /apis.json
+    status: 301
+    redirect: https://www.bidmachine.com/apis.json
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /apis.yml
+    status: 301
+    redirect: https://www.bidmachine.com/apis.yml
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://www.bidmachine.com
+  hit_count: 0
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://docs.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://developers.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://mediation-docs.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://api-eu.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://api-us.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://api-apac.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://api.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/openid-configuration
+    status: 404
+  - path: /.well-known/oauth-authorization-server
+    status: 404
+  - path: /.well-known/oauth-protected-resource
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/api-catalog.json
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/ucp.json
+    status: 404
+  - path: /.well-known/acp.json
+    status: 404
+  - path: /.well-known/aauth-resource.json
+    status: 404
+  - path: /apis.json
+    status: 404
+  - path: /.well-known/apis.json
+    status: 404
+  - path: /apis.yml
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 404
+    result: passed
+- host: https://dashboard.bidmachine.io
+  hit_count: 0
+  documents:
+  - path: /.well-known/security.txt
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/openid-configuration
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/oauth-protected-resource
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/api-catalog
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/api-catalog.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/ai-plugin.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/ucp.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/acp.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/apis.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/aauth-resource.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /apis.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /apis.yml
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/agent-card.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  - path: /.well-known/agent.json
+    status: 200
+    content_type: text/html; charset=UTF-8
+    bytes: 1404
+    note: SPA catch-all shell (text/html), not a document — see path_echo_control
+  path_echo_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 200
+    result: failed
+  soft_404_control:
+    path: /.well-known/bidmachine-io-negative-control-53jzynsk.json
+    status: 200
+    bytes: 1404
+    content_type: text/html; charset=UTF-8
+    note: Angular SPA answers 200 text/html (1,404 bytes) for every path including the negative control; every 200
+      on this host is a shell, not a document.

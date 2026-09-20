@@ -1,0 +1,39 @@
+# BidMachine Docs Documentation
+
+> Documentation for BidMachine Docs
+
+Append .md to any documentation page URL to get its markdown version.
+
+## Guides
+- [In-House Mediation](https://docs.bidmachine.io/docs/in-house-mediation-android.md)
+- [AppLovin MAX](https://docs.bidmachine.io/docs/applovin-max-android.md): This page gives you step-by-step instructions for how you set BidMachine live as an ad network on the MAX Mediation platform.
+- [IronSource Level Play](https://docs.bidmachine.io/docs/ironsource-level-play-android.md)
+- [Adapter compatibility](https://docs.bidmachine.io/docs/adapter-compatibility-android.md)
+- [Changelog](https://docs.bidmachine.io/docs/ironsource-levelplay-changelog.md)
+- [AdMob / GAM Waterfall](https://docs.bidmachine.io/docs/admob-waterfall-android.md)
+- [Changelog](https://docs.bidmachine.io/docs/android-changelog.md)
+- [Leveraging RampID](https://docs.bidmachine.io/docs/leveraging-rampid-android.md): Instruction how to pass Ramp external ID value through BidMachine SDK:
+- [In-House Mediation](https://docs.bidmachine.io/docs/in-house-mediation-ios.md)
+- [Request](https://docs.bidmachine.io/docs/ad-request.md)
+- [Ad object](https://docs.bidmachine.io/docs/ad-object.md)
+- [Header Bidding](https://docs.bidmachine.io/docs/header-bidding.md)
+- [Troubleshooting](https://docs.bidmachine.io/docs/troubleshooting.md)
+- [Manual integration](https://docs.bidmachine.io/docs/manual-integration.md)
+- [AppLovin MAX](https://docs.bidmachine.io/docs/applovin-max-ios.md): This page gives you step-by-step instructions for how you set BidMachine live as an ad network on the MAX Mediation platform.
+- [IronSource Level Play](https://docs.bidmachine.io/docs/ironsource-level-play-ios.md)
+- [Adapter compatibility](https://docs.bidmachine.io/docs/adapter-compatibility-ios.md)
+- [AdMob / GAM Waterfall](https://docs.bidmachine.io/docs/admob-waterfall-ios.md)
+- [Changelog](https://docs.bidmachine.io/docs/ios-changelog.md)
+- [Leveraging RampID](https://docs.bidmachine.io/docs/leveraging-rampid.md): Instruction how to pass Ramp external ID value through BidMachine SDK:
+- [IronSource LevelPlay Waterfall Integration](https://docs.bidmachine.io/docs/ironsource-levelplay-waterfall-integration-1.md)
+- [Ad Ops - Google AdMob Waterfall](https://docs.bidmachine.io/docs/ad-ops-google-admob-waterfall.md)
+- [Ad Ops - Google Ad Manager Waterfall](https://docs.bidmachine.io/docs/ad-ops-gam-waterfall.md)
+- [Requirements for MRAID Ads](https://docs.bidmachine.io/docs/requirements-for-mraid-ads.md)
+- [Contextual data collected by BM SDK](https://docs.bidmachine.io/docs/contextual-data-collected-by-bm-sdk.md)
+- [Macros for Bid Response](https://docs.bidmachine.io/docs/macros-for-bid-response.md)
+- [iOS 14+ & SKAdNetwork Support](https://docs.bidmachine.io/docs/os-14-skadnetwork-support.md)
+- [SKAdNetwork Support](https://docs.bidmachine.io/docs/skadnetwork-22-support.md)
+- [Payments](https://docs.bidmachine.io/docs/payments.md)
+- [Reporting API](https://docs.bidmachine.io/docs/reporting-api.md)
+- [App privacy details on the App Store](https://docs.bidmachine.io/docs/app-privacy-details-on-the-app-store.md)
+- [App privacy details on Google Play](https://docs.bidmachine.io/docs/app-privacy-details-on-the-google-play.md)

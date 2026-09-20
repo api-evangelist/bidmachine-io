@@ -1,0 +1,37 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: BidMachine
+providerId: bidmachine-io
+created: '2026-09-19'
+modified: '2026-09-19'
+generated: '2026-09-19'
+method: searched
+plan_count: 0
+tags:
+  - Advertising
+  - Ad Exchange
+  - Monetization
+description: >-
+  BidMachine publishes no plans or price list. It is a two-sided ad exchange: publishers integrate the
+  SDK and are paid for inventory, demand partners buy on a CPM model, and BidMachine's take is not
+  published. The only money terms on the public surface are payout terms for publishers. There is no
+  /pricing page (404 on www.bidmachine.com), no API pricing, and access to the REST APIs comes with a
+  publisher/DSP account rather than a purchased tier.
+sources:
+  - {url: https://www.bidmachine.com/pricing, status: 404}
+  - {url: https://www.bidmachine.io/pricing, status: 301, note: redirects to www.bidmachine.com/pricing (404)}
+  - {url: https://developers.bidmachine.io/dashboard/payments, status: 200}
+  - {url: https://developers.bidmachine.io/dsp/requirements, status: 200}
+commercial_terms:
+  business_model: Ad exchange / in-app bidding — CPM auctions, first-price only, USD only (https://developers.bidmachine.io/sdk/general/bidder)
+  publisher_payout:
+    minimum_payable_amount: 'USD 1,000'
+    rollover: 'If monthly earnings are below the threshold, the balance rolls over to the next month.'
+    processing: 'Pending: created and being processed by the Financial team (up to 5 days); Completed; Rejected.'
+    source: https://developers.bidmachine.io/dashboard/payments
+  demand_partner_terms:
+    model: CPM
+    source: https://developers.bidmachine.io/dsp/requirements
+  api_access: Included with a publisher (SSP) or demand account; no separate API plan.
+plans: []

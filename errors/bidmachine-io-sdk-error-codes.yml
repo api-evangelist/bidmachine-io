@@ -1,0 +1,36 @@
+generated: '2026-09-19'
+method: searched
+source: https://mediation-docs.bidmachine.io/android/error-codes
+format: numeric-code-registry
+description: >-
+  Client-side error registry of the BidMachine Plus SDK (BidMachineError.code), published verbatim at
+  mediation-docs.bidmachine.io for Android, iOS and Unity (the three pages carry the same table). These
+  are SDK/runtime errors surfaced to the app in load/show callbacks, not HTTP API errors — the REST
+  API surface is in errors/bidmachine-io-problem-types.yml. The provider's own agent skills ship the
+  same table as skills/bidmachine-*/references/error-codes.md.
+log_format:
+  single: '(<code>) <message>'
+  chained: '(<code>) <message> - (<causeCode>) <causeMessage>'
+  examples:
+    - "(100) Can't connect to server"
+    - '(102) Timeout reached'
+    - '(103) No fill'
+    - '(110) Request contains bad syntax or cannot be fulfilled'
+    - '(108) Unknown internal error - (109) Server failed to fulfill an apparently valid request'
+codes:
+  - {code: 100, constant: CODE_CONNECTION, description: "Can't connect to server."}
+  - {code: 101, constant: CODE_BAD_CONTENT, description: Response content is malformed or cannot be parsed.}
+  - {code: 102, constant: CODE_TIMEOUT, description: Timeout reached.}
+  - {code: 103, constant: CODE_NO_FILL, description: No fill.}
+  - {code: 104, constant: CODE_AD_NOT_READY, description: Ad is not ready to be shown.}
+  - {code: 105, constant: CODE_AD_ALREADY_LOADING, description: A load is already in progress.}
+  - {code: 106, constant: CODE_DESTROYED, description: Ad was destroyed.}
+  - {code: 107, constant: CODE_EXPIRED, description: Ad was expired.}
+  - {code: 108, constant: CODE_INTERNAL, description: Unknown internal error.}
+  - {code: 109, constant: CODE_SERVER, description: Server failed to fulfill an apparently valid request.}
+  - {code: 110, constant: CODE_BAD_REQUEST, description: Request contains bad syntax or cannot be fulfilled.}
+  - {code: 200, constant: CODE_HEADER_BIDDING, description: Adapter / header-bidding network error.}
+platforms:
+  - {platform: android, url: https://mediation-docs.bidmachine.io/android/error-codes}
+  - {platform: ios, url: https://mediation-docs.bidmachine.io/ios/error-codes}
+  - {platform: unity, url: https://mediation-docs.bidmachine.io/unity/error-codes}

@@ -1,0 +1,130 @@
+{
+  "skill_name": "bidmachine-unity",
+  "notes": "Feature-first eval set for the Unity First Look skill. Each integration eval runs against a CLEAN slice of the JoinBlocks game (AppLovin MAX as the mediation, First Look NOT yet added) that compiles before integration; the agent grafts First Look in front of the existing MAX setup. The fixture (a JoinBlocks branch with the existing fl_bmplus First Look code removed) is supplied by the harness — JoinBlocks ships a full First Look impl, so the unmodified project cannot test grafting. The headline assertion for every integration eval is that the project still COMPILES after integration with no new console errors, checked through the Unity MCP server (add registries + add package + recompile + read_console); the build_gate 'unity-compile' denotes that path. The skill's API was verified against the installed com.bidmachine.plus plugin source (Runtime/Api/*.cs): BidMachine.GetInstance(appKey), InitializationConfigBuilder(IntegrationMode.Mediation), InterstitialAd/RewardedAd with Loaded/LoadFailed/ShowFailed/Closed/UserQualifiedForReward, AdInfo.Price / RawData. The package is com.bidmachine.plus (version 0.1.0), installed from the BidMachine scoped registry (npm.bidmachine.com, scope com.bidmachine) with EDM4U resolved from OpenUPM (package.openupm.com, scope com.google.external-dependency-manager). The core design constraint, graded throughout: the agent PRESERVES the project's existing mediation calls and lifts them behind a First Look adapter — it does not rewrite the working MAX integration, and it does not touch banners. Process evals (tooling-fork-first, detect-and-confirm-mediation, plan-before-editing) and the no-MCP path are graded from the run transcript. Integration evals are run with clarifying answers supplied so headless runs don't stall; the asking is tested separately. Schema is shared-harness compatible: a common harness reads id/name/prompt/expected_output/files/assertions; the unity-only keys (fixture, fixture_setup, tooling, process_expectations, build_gate, verifier_expectation, notes) are additive and ignored by the common path.",
+  "build_gates": {
+    "unity-compile": "Via the Unity MCP server: add both scoped registries, install com.bidmachine.plus, trigger a recompile, and read the console — PASS when the project compiles with no new errors attributable to the integration."
+  },
+  "evals": [
+    {
+      "id": 0,
+      "name": "first-look-interstitial-rewarded-max",
+      "prompt": "My Unity game uses AppLovin MAX for interstitial and rewarded ads. Add BidMachine Plus as a First Look in front of MAX for both formats: ask BidMachine first on a 15s timeout, and fall through to my existing MAX setup on a no-fill or timeout. BidMachine app key: bmp-key-01. Interstitial placement: bmp-inter-01. Rewarded placement: bmp-rew-01. Unity MCP is running.",
+      "fixture": "fixtures/unity-joinblocks-clean",
+      "fixture_setup": "Harness provides the JoinBlocks branch with the existing First Look (fl_bmplus) code removed: MAX interstitial + rewarded wired and compiling, no com.bidmachine.plus package, Unity MCP connected.",
+      "tooling": "mcp",
+      "expected_output": "Two scoped registries added (BidMachine + OpenUPM); com.bidmachine.plus@0.1.0 installed; EDM4U resolved; an AdManager initializing BidMachine in IntegrationMode.Mediation, then the existing MAX init, then a FirstLook controller per format; controllers request BidMachine first, arm a 15s timeout, fall through to the existing MAX calls on LoadFailed/timeout, reload on close; rewarded grant fired from either BidMachine's UserQualifiedForReward or MAX's reward callback; real app key/placements; existing MAX code preserved. Compiles with no new console errors.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "Project compiles after integration with no new console errors (unity-compile gate)"},
+        {"id": "registries", "text": "Both scoped registries present in Packages/manifest.json: BidMachine (com.bidmachine) and OpenUPM (com.google.external-dependency-manager)"},
+        {"id": "package", "text": "com.bidmachine.plus added to dependencies; EDM4U resolves"},
+        {"id": "init-mediation", "text": "BidMachine.GetInstance + InitializationConfigBuilder(IntegrationMode.Mediation) + Initialize present"},
+        {"id": "first-look-cycle", "text": "Per format: BidMachine asked first, a timeout armed, fall-through to MAX on LoadFailed/timeout, reload on close"},
+        {"id": "preserves-max", "text": "Existing MAX load/show calls are reused (wrapped behind the adapter), not rewritten or deleted"},
+        {"id": "rewarded-grant", "text": "Rewarded reward granted from either BidMachine UserQualifiedForReward or the MAX reward callback"},
+        {"id": "real-ids", "text": "Real app key bmp-key-01 and placements bmp-inter-01 / bmp-rew-01 used; no YOUR_ placeholders left"},
+        {"id": "no-banner-change", "text": "Banner handling is left untouched"}
+      ],
+      "process_expectations": [],
+      "build_gate": "unity-compile",
+      "verifier_expectation": "verify_integration.py reports no FAIL: BidMachine package PASS, registry PASS, External Dependency Manager PASS (resolved in packages-lock.json), init PASS, Mode PASS (Mediation), First Look — BidMachine ad PASS, Placeholder keys PASS.",
+      "notes": "Core happy path. MCP tooling path with answers supplied."
+    },
+    {
+      "id": 1,
+      "name": "preserve-existing-mediation",
+      "prompt": "Add a BidMachine Plus First Look in front of my existing rewarded ad in this Unity game, falling through to what I already use. Keep my current mediation setup working. BidMachine app key: bmp-key-02. Rewarded placement: bmp-rew-02. Unity MCP is running.",
+      "fixture": "fixtures/unity-joinblocks-clean",
+      "fixture_setup": "Same clean JoinBlocks branch (MAX rewarded wired).",
+      "tooling": "mcp",
+      "expected_output": "A FirstLook rewarded controller that calls BidMachine first and the project's EXISTING MAX rewarded code on fall-through, via an adapter. The original MAX rewarded methods/manager remain and are still reachable; no MAX wiring is rewritten or removed.",
+      "files": [],
+      "assertions": [
+        {"id": "compiles", "text": "Project compiles after integration with no new console errors"},
+        {"id": "adapter-wraps", "text": "An adapter implements the fall-through by calling the project's existing MAX rewarded code, not a fresh reimplementation"},
+        {"id": "original-intact", "text": "The project's original MAX rewarded load/show/reward code is left intact (diff touches it minimally, if at all)"},
+        {"id": "first-look-cycle", "text": "BidMachine asked first; fall-through to the existing rewarded on LoadFailed/timeout"},
+        {"id": "real-ids", "text": "Real app key/placement used; no YOUR_ placeholders left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "unity-compile",
+      "verifier_expectation": "verify_integration.py reports no FAIL.",
+      "notes": "Guards the core constraint: preserve the existing mediation, lift behind an adapter."
+    },
+    {
+      "id": 2,
+      "name": "tooling-fork-first",
+      "prompt": "Add BidMachine Plus First Look to my Unity game in front of MAX.",
+      "fixture": "fixtures/unity-joinblocks-clean",
+      "fixture_setup": "Same clean JoinBlocks branch.",
+      "tooling": "n/a",
+      "expected_output": "Before installing anything, the agent presents the three tooling options (Unity MCP already running / set up Unity MCP / manual without MCP) and waits for the choice. It does not start installing on an assumption.",
+      "files": [],
+      "assertions": [],
+      "process_expectations": [
+        {"id": "asks-tooling", "text": "The run presented the three-way tooling choice (MCP running / set up MCP / manual) before any install or edit. Graded from the transcript."},
+        {"id": "no-premature-install", "text": "No registry/package install or code edit before the tooling path was chosen."}
+      ],
+      "build_gate": "none",
+      "verifier_expectation": "n/a — asking is the correct outcome.",
+      "notes": "Run with no tooling answer pre-supplied, to test the fork itself."
+    },
+    {
+      "id": 3,
+      "name": "detect-and-confirm-mediation",
+      "prompt": "Add BidMachine Plus First Look to my Unity game. Unity MCP is running. App key: bmp-key-03. Interstitial placement: bmp-inter-03.",
+      "fixture": "fixtures/unity-joinblocks-clean",
+      "fixture_setup": "Same clean JoinBlocks branch (MAX). The prompt does not name the mediation.",
+      "tooling": "mcp",
+      "expected_output": "The agent inspects the project, identifies AppLovin MAX as the mediation in use, and presents that finding for the user to confirm before building the fall-through against it. It does not ask blind for the mediation it can detect, and does not silently assume the wrong one.",
+      "files": [],
+      "assertions": [],
+      "process_expectations": [
+        {"id": "detects-max", "text": "The run inspected manifest.json + the game scripts and identified MAX as the mediation before wiring the fall-through. Graded from the transcript."},
+        {"id": "confirms", "text": "The run presented the detected mediation for confirmation rather than asking blind or silently assuming."}
+      ],
+      "build_gate": "unity-compile",
+      "verifier_expectation": "verify_integration.py reports no FAIL after the confirmed integration proceeds.",
+      "notes": "Exercises the detect-then-confirm step."
+    },
+    {
+      "id": 4,
+      "name": "plan-before-editing",
+      "prompt": "Add BidMachine Plus First Look in front of MAX for interstitials in my Unity game. Unity MCP is running. App key: bmp-key-04. Interstitial placement: bmp-inter-04.",
+      "fixture": "fixtures/unity-joinblocks-clean",
+      "fixture_setup": "Same clean JoinBlocks branch.",
+      "tooling": "mcp",
+      "expected_output": "After install and research, the agent presents a short plan of the First Look change (files to add, how the controller calls the existing MAX code, where Init is called, how show sites change) and asks for approval before editing game code.",
+      "files": [],
+      "assertions": [],
+      "process_expectations": [
+        {"id": "presents-plan", "text": "The run presented a change plan before editing the game's code. Graded from the transcript."},
+        {"id": "waits-for-approval", "text": "The run waited for approval (or proceeded only after it) rather than editing on assumptions."}
+      ],
+      "build_gate": "none",
+      "verifier_expectation": "n/a — the graded outcome is the plan/approval step, not a finished integration.",
+      "notes": "Install may proceed; the graded behavior is the approval gate before code edits."
+    },
+    {
+      "id": 5,
+      "name": "manual-path-no-mcp",
+      "prompt": "Add BidMachine Plus First Look to my Unity game in front of MAX. I don't want to use any MCP server. App key: bmp-key-05. Interstitial placement: bmp-inter-05.",
+      "fixture": "fixtures/unity-joinblocks-clean",
+      "fixture_setup": "Same clean JoinBlocks branch.",
+      "tooling": "manual",
+      "expected_output": "On the manual path the agent writes the First Look C# code (AdManager + controller(s) + adapter over the existing MAX setup) and gives the user the exact Editor-UI steps to add the two scoped registries and install com.bidmachine.plus (Project Settings > Scoped Registries, then Package Manager > My Registries), close the scoped-registry popup, and run the Android/iOS resolver, then report console output back. It does not edit Packages/manifest.json itself unless the user prefers that. It calls out that without the console it cannot verify the install or fix compile errors in the same loop.",
+      "files": [],
+      "assertions": [
+        {"id": "code-written", "text": "AdManager + First Look controller(s) + adapter written against the existing MAX setup"},
+        {"id": "ui-install-steps", "text": "Exact Editor-UI steps given for both registries + package install + scoped-registry popup + resolver, with a request to report console output"},
+        {"id": "no-silent-manifest-edit", "text": "The agent did not silently edit Packages/manifest.json; if it did edit it, that was at the user's preference. The registries+package are otherwise left for the user to add via the UI"},
+        {"id": "tradeoff-flagged", "text": "The run states the trade-off: without MCP/console it cannot verify the install or fix compile errors in the same loop"},
+        {"id": "real-ids", "text": "Real app key/placement used; no YOUR_ placeholders left"}
+      ],
+      "process_expectations": [],
+      "build_gate": "none",
+      "verifier_expectation": "verify_integration.py grades the C# the agent wrote (init, a BidMachine fullscreen ad, no placeholders). The registry/package/EDM checks may WARN until the user completes the UI install — expected on the manual path, not a FAIL of the agent's work.",
+      "notes": "No compile gate — the user drives Unity on the manual path. The agent writes the C# and hands off the UI install; manifest.json editing is an opt-in alternative, not the default."
+    }
+  ]
+}

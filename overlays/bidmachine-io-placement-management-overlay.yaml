@@ -1,0 +1,31 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for BidMachine Placement Management API
+  version: 1.0.0
+  description: >-
+    Records what API Evangelist added when assembling openapi/bidmachine-io-placement-management-openapi.yml
+    from the provider's compiled per-operation objects (openapi/_original/bidmachine-io-placement-management-api-operations.json).
+    The provider's objects carry no operationId, tags or summary; every other field is verbatim.
+extends: openapi/bidmachine-io-placement-management-openapi.yml
+x-generated: '2026-09-19'
+x-method: generated
+actions:
+  - target: $.info
+    update:
+      x-apievangelist-source: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+      x-apievangelist-harvested: '2026-09-19'
+  - target: $.paths['/auth'].post
+    update: {operationId: getAccessToken, summary: Get Access Token, tags: [Authentication]}
+  - target: $.paths['/publisher/sources/{sourceId}/placements'].get
+    update: {operationId: listPlacements, summary: List Placements, tags: [Placements]}
+  - target: $.paths['/publisher/sources/{sourceId}/placements'].post
+    update: {operationId: createPlacement, summary: Create Placement, tags: [Placements]}
+  - target: $.paths['/publisher/sources/{sourceId}/placements'].put
+    update: {operationId: updatePlacement, summary: Update Placement, tags: [Placements]}
+  - target: $.paths['/publisher/sources/{sourceId}/placements/{id}'].delete
+    update: {operationId: deletePlacement, summary: Delete Placement, tags: [Placements]}
+  - target: $.tags
+    update: [{name: Authentication}, {name: Placements}]
+  - target: $.components.schemas
+    description: The titled inline schemas Placement and PlacementInput were hoisted back into components (the docs plugin had dereferenced them).
+    update: {}

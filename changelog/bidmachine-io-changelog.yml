@@ -1,0 +1,98 @@
+generated: '2026-09-19'
+method: searched
+source: https://developers.bidmachine.io/sdk/general/android/android-changelog
+description: >-
+  Structured capture of BidMachine's dated changelogs. The REST APIs have no changelog of their own;
+  the product cadence is carried by the SDK changelogs — Android and iOS (3.x, semver, dated
+  releases), Unity plugin (tracks the native SDKs), and the newer BidMachine Plus SDK (0.1.x, undated
+  entries on mediation-docs.bidmachine.io). Recent window only; the live pages are the source of truth.
+docs:
+  android: https://developers.bidmachine.io/sdk/general/android/android-changelog
+  ios: https://developers.bidmachine.io/sdk/general/ios/ios-changelog
+  unity: https://developers.bidmachine.io/sdk/general/unity/unity-changelog
+  plus_android: https://mediation-docs.bidmachine.io/android/changelog
+  plus_ios: https://mediation-docs.bidmachine.io/ios/changelog
+  plus_unity: https://mediation-docs.bidmachine.io/unity/changelog
+  mediation_adapters: https://developers.bidmachine.io/sdk/ironsource/android/changelog
+versioning:
+  scheme: semver
+  current:
+    android_sdk: 3.8.0
+    ios_sdk: 3.8.0
+    unity_plugin: 3.6.0
+    plus_android: 0.1.2
+    plus_ios: 0.1.3
+    plus_unity: 0.1.1
+  detail: lifecycle/bidmachine-io-lifecycle.yml
+entries:
+  - version: '3.8.0'
+    product: Android SDK
+    date: '2026-08-25'
+    latest: true
+    additions:
+      - Picture-in-Picture (PiP) support
+      - Improved audio handling for video ads
+    fixes:
+      - Protection against non-closing fullscreen ads
+      - Improved GDPR consent handling
+      - Fixed rare ANR when playing videos
+      - Improved OM SDK compatibility
+  - version: '3.8.0'
+    product: iOS SDK
+    date: '2026-08-25'
+    latest: true
+    additions: [PiP (Picture-in-Picture) mode in Adaptive Rendering]
+    changes: [Updated MRAID WebView handling for iOS 26, Improved ad request reliability, Improved privacy and regulation handling]
+    fixes: [Fixed video playback issues, Stability improvements and crash fixes]
+  - version: '3.7.1'
+    product: Android SDK
+    date: '2026-05-29'
+    fixes: [Improved work with UserAgent, Stability improvements]
+  - version: '3.7.0'
+    product: Android SDK
+    date: '2026-05-11'
+    additions: [Updated OM SDK to 1.6.3, Disclaimer view support for native ads, CTV device type support, 'New public API: BidMachine.setNonPersonalized(Boolean?), BidMachine.setConsentStatus(Boolean)']
+    deprecations: ['BidMachine.setUSPrivacyString(String)', 'BidMachine.setConsentConfig(Boolean, String)']
+    fixes: [Fixed NPE in dispatchDetachedFromWindow, Fixed crash in BidMachineAd]
+  - version: '3.7.0'
+    product: iOS SDK
+    date: '2026-05-11'
+    additions: [New flat configuration API on BidMachineSdk.shared (SDK, regulation, publisher, targeting, store and bidding settings via chainable with... methods)]
+  - version: '3.6.1'
+    product: Android SDK
+    date: '2026-03-23'
+    fixes: [Stability improvements]
+  - version: '3.6.0'
+    product: Android SDK
+    date: '2026-03-11'
+    additions: [Viewability tracker for IAB MRC support, Updated OM SDK to 1.6.1, Improved BidMachineInitProvider performance, Mute WebView audio via androidx.webkit]
+    fixes: [Fixed rewarded video skip via app backgrounding (singleTask), Fixed OM SDK 1.6.1 r8 rules, Fixed ANR with WebChromeClient#getVisitedHistory]
+  - version: '3.6.0'
+    product: Unity plugin
+    date: '2026-03-13'
+    changes: [Updated Android/iOS SDKs to 3.6.0, Minimum Unity 2021.3, Refactored Runtime and Editor scripts, AdPlacementConfig and BannerAdSize in request builders]
+    deprecations: [Legacy banner request APIs and IAdRequestListener, 'BannerSize members renamed to IAB standard names (old names deprecated)']
+    breaking: [Removed deprecated UserPermissions class]
+  - version: '3.5.1'
+    product: Android SDK
+    date: '2025-12-11'
+    additions: [BannerView.adSize, BannerAdSize.getMaxAdaptiveHeight(width)]
+    fixes: [Fixed banner expand issues, Fixed OMSDK overlapping issues]
+  - version: '3.5.0'
+    product: Android SDK
+    date: '2025-10-21'
+    deprecations: [BannerSize and AdsFormat enums (use BannerAdSize and AdFormat), 'BannerRequest.Builder() no-arg constructor']
+  - version: '0.1.1'
+    product: BidMachine Plus Unity
+    date: null
+    changes: [Updated Android SDK to v0.1.1, Updated iOS SDK to v0.1.3]
+  - version: '0.1.0'
+    product: BidMachine Plus (Android / iOS / Unity)
+    date: null
+    additions:
+      - First public release — two integration modes (ad network or mediation platform)
+      - Interstitial, Rewarded and Banner formats; notifyWin / notifyLoss waterfall reporting
+      - Server-to-server bidding (load with a bid payload)
+      - Per-impression revenue via AdInfo
+      - Automatic IAB consent reading (TCF v2, US Privacy, GPP) + COPPA / non-personalized controls
+      - AI-assisted integration via the BidMachine Plus SDK Agents bundle (Claude Code, Codex, Gemini)

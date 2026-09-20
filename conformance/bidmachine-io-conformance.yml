@@ -1,0 +1,95 @@
+generated: '2026-09-19'
+method: searched
+source: >-
+  https://developers.bidmachine.io/sdk/general/bidder, https://developers.bidmachine.io/sdk/ssp/overview,
+  https://developers.bidmachine.io/dsp/requirements, https://developers.bidmachine.io/sdk/general/tcf-vendors,
+  https://www.bidmachine.com/privacy-policy, https://mediation-docs.bidmachine.io/android/privacy,
+  openapi/bidmachine-io-placement-management-openapi.yml, openapi/bidmachine-io-reporting-openapi.yml
+description: >-
+  Standards BidMachine's public surface declares or demonstrably implements. BidMachine is a mobile
+  ad exchange, so the domain standards are the IAB Tech Lab family: OpenRTB for the auction surface,
+  TCF v2 / US Privacy / GPP for consent signals, MRAID / VAST / OM SDK / SKAdNetwork on the creative
+  and measurement side. The REST APIs (Placement Management, Reporting) use plain HTTP Basic and
+  Bearer auth with no OAuth 2.0, no OIDC, no RFC 9457 problem details and no cursor pagination.
+  No published security certification (SOC 2, ISO 27001, PCI) was found anywhere on the provider's
+  surface, so no `Compliance` pointer is emitted.
+standards:
+  - id: openrtb-2.5
+    conforms: true
+    scope: BidMachine Auction API (SSP / in-house bidder) and Ad Exchange (DSP side)
+    evidence: >-
+      "BidMachine bidding supports the OpenRTB 2.5 protocol to receive bid requests from supply partners and
+      return bid responses" — https://developers.bidmachine.io/sdk/ssp/overview; bid endpoints
+      https://api-{eu,us,apac}.bidmachine.io/auction/prebid/${source_id} (https://developers.bidmachine.io/sdk/general/bidder);
+      DSP side "supports the Open RTB version 2.3 and 2.5" (https://developers.bidmachine.io/dsp/requirements) with a
+      full bid request / bid response field specification at https://developers.bidmachine.io/dsp/bid-request/specification.
+    domain_standard: true
+    note: >-
+      The OpenRTB contract is published as prose field tables and JSON examples, not as an OpenAPI or JSON Schema, so
+      the machine-readable signature the domain_standard_conformance check looks for in a contract is absent; this
+      row records the documented conformance honestly without a contract to point at.
+  - id: openrtb-2.3
+    conforms: true
+    scope: Ad Exchange (DSP side)
+    evidence: 'https://developers.bidmachine.io/dsp/overview — "Supported Open RTB versions: 2.3 and 2.5"'
+  - id: iab-tcf-v2
+    conforms: true
+    evidence: >-
+      "BidMachine Inc. participates in the IAB Europe Transparency & Consent Framework ... registered on the IAB Europe
+      Global Vendor List under Vendor ID 736" (https://www.bidmachine.com/privacy-policy); SDK auto-reads IABTCF_TCString /
+      IABTCF_gdprApplies (https://mediation-docs.bidmachine.io/android/privacy); TCF vendor list page
+      https://developers.bidmachine.io/sdk/general/tcf-vendors.
+  - id: iab-us-privacy
+    conforms: true
+    evidence: SDK auto-reads IABUSPrivacy_String (https://mediation-docs.bidmachine.io/android/privacy)
+  - id: iab-gpp
+    conforms: true
+    evidence: SDK auto-reads IABGPP_HDR_GppString / IABGPP_GppSID (https://mediation-docs.bidmachine.io/android/privacy)
+  - id: iab-mraid
+    conforms: true
+    evidence: https://developers.bidmachine.io/dsp/bid-request/mraid-requirements (MRAID ads requirements)
+  - id: iab-vast
+    conforms: true
+    evidence: https://developers.bidmachine.io/dsp/overview — "Video Ads (VAST)"
+  - id: iab-om-sdk
+    conforms: true
+    evidence: Android changelog 3.7.0 "Updated OM SDK to 1.6.3" (https://developers.bidmachine.io/sdk/general/android/android-changelog); OMSDK-Appodeal-iOS-Package dependency in BidMachine-SPM Package.swift
+  - id: apple-skadnetwork
+    conforms: true
+    evidence: https://developers.bidmachine.io/sdk/general/unity/overview (SKAdNetwork IDs), https://docs.bidmachine.io/docs/os-14-skadnetwork-support.md
+  - id: coppa
+    conforms: true
+    evidence: https://developers.bidmachine.io/dsp/requirements ("COPPA compliant"); setCoppa API and COPPA-restricted parameter table at https://developers.bidmachine.io/sdk/general/data-collection-practices
+  - id: gdpr
+    conforms: true
+    evidence: Data Protection Addendum with EU SCCs (https://www.bidmachine.com/dpa); GDPR-restricted parameter table (https://developers.bidmachine.io/sdk/general/data-collection-practices)
+  - id: ccpa
+    conforms: true
+    evidence: https://www.bidmachine.com/ccpa-privacy-policy
+  - id: http-basic-auth
+    conforms: true
+    evidence: openapi securitySchemes basicAuth (type http, scheme basic) on both APIs; live probe of https://api-eu.bidmachine.io/api/v1/report/ssp returned 401 with WWW-Authenticate Basic realm="Reporting API"
+  - id: http-bearer-auth
+    conforms: true
+    evidence: openapi securitySchemes bearerAuth (type http, scheme bearer) on the Placement Management API; token issued by POST /auth
+  - id: oauth2
+    conforms: false
+    evidence: no oauth2 securityScheme in either OpenAPI; /.well-known/oauth-authorization-server 404 on every host (well-known/bidmachine-io-well-known.yml)
+  - id: oidc
+    conforms: false
+    evidence: /.well-known/openid-configuration 404 on every host
+  - id: rfc9457-problem-details
+    conforms: false
+    evidence: 'error responses declare no content; live 400 body is {"message":"Missing parameter: start"} with content-type application/json'
+  - id: rfc8594-sunset-header
+    conforms: false
+    evidence: no Sunset/Deprecation headers documented or observed
+  - id: cursor-pagination
+    conforms: false
+    evidence: listPlacements returns the full array; report endpoints are date-range bounded, not paged
+  - id: idempotency-key
+    conforms: false
+    evidence: no Idempotency-Key parameter in either OpenAPI (conventions/bidmachine-io-conventions.yml)
+  - id: rfc9116-security-txt
+    conforms: false
+    evidence: /.well-known/security.txt 404 on all 11 hosts probed; disclosure policy is a web page instead (security/bidmachine-io-vulnerability-disclosure.yml)

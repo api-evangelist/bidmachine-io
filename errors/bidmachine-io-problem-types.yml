@@ -1,0 +1,58 @@
+generated: '2026-09-19'
+method: derived
+format: message-envelope
+source: >-
+  openapi/bidmachine-io-placement-management-openapi.yml, openapi/bidmachine-io-reporting-openapi.yml
+  (4xx responses), plus live unauthenticated probes of https://api-eu.bidmachine.io/api/v1 on 2026-09-19
+  (400 body shape, 401 WWW-Authenticate realm, 404 body shape).
+description: >-
+  Error surface of BidMachine's Placement Management and Reporting REST APIs. The OpenAPI declares
+  status codes with one-line descriptions and no error schema; the live API answers JSON
+  {"message": "<text>"} for 400/404 and an empty body (or an HTML "Authentication required" page
+  on the placements path) for 401. Not RFC 9457. The 429 carries a human-readable
+  `ad-exchange-warn-message` response header instead of Retry-After.
+envelope:
+  content_type: application/json
+  shape: '{"message": "<string>"}'
+  observed:
+    - {status: 400, url: 'https://api-eu.bidmachine.io/api/v1/report/ssp', body: '{"message":"Missing parameter: start"}'}
+    - {status: 404, url: 'https://api-eu.bidmachine.io/api/v1/auth (GET)', body: '{"message":""}'}
+    - {status: 401, url: 'https://api-eu.bidmachine.io/api/v1/report/ssp?start=2026-09-01&end=2026-09-02', headers: {www-authenticate: 'Basic realm="Reporting API"'}, body: ''}
+    - {status: 401, url: 'https://api-eu.bidmachine.io/api/v1/publisher/sources/1/placements', content_type: text/html, body: '<html><head><title>Authentication required</title></head><body>Authentication required</body></html>'}
+problems:
+  - status: 400
+    title: Bad Request
+    detail: Missing or invalid parameters (e.g. start/end absent or not yyyy-MM-dd, unknown field name).
+    remediation: Send start and end as yyyy-MM-dd (end exclusive); keep the window within 45 days (2 years for p2p-revenue); check field names against the fields enum.
+    source_operations: [openapi/bidmachine-io-reporting-openapi.yml#retrieveSspReportData, openapi/bidmachine-io-reporting-openapi.yml#retrieveBidderReportData, openapi/bidmachine-io-reporting-openapi.yml#retrieveP2pRevenueReportData]
+  - status: 401
+    title: Unauthorized
+    detail: Invalid or missing Basic credentials (reporting, /auth) or a missing/expired bearer token (placements). Placement tokens are short-lived.
+    remediation: Re-authenticate with the dashboard login/password; for placements call POST /auth again and retry with the fresh token.
+    source_operations: [openapi/bidmachine-io-placement-management-openapi.yml#getAccessToken, openapi/bidmachine-io-placement-management-openapi.yml#listPlacements, openapi/bidmachine-io-placement-management-openapi.yml#createPlacement, openapi/bidmachine-io-placement-management-openapi.yml#updatePlacement, openapi/bidmachine-io-placement-management-openapi.yml#deletePlacement, openapi/bidmachine-io-reporting-openapi.yml#retrieveSspReportData, openapi/bidmachine-io-reporting-openapi.yml#retrieveBidderReportData, openapi/bidmachine-io-reporting-openapi.yml#retrieveP2pRevenueReportData]
+  - status: 403
+    title: Forbidden
+    detail: The authenticated publisher does not own the requested source (placements), or the account is not entitled to the P2P revenue report.
+    remediation: Use a sourceId that belongs to the authenticated publisher; P2P revenue requires account entitlement — contact BidMachine.
+    source_operations: [openapi/bidmachine-io-placement-management-openapi.yml#listPlacements, openapi/bidmachine-io-placement-management-openapi.yml#createPlacement, openapi/bidmachine-io-placement-management-openapi.yml#updatePlacement, openapi/bidmachine-io-placement-management-openapi.yml#deletePlacement, openapi/bidmachine-io-reporting-openapi.yml#retrieveP2pRevenueReportData]
+  - status: 404
+    title: Not Found
+    detail: No placement with that id exists on the given source.
+    remediation: List placements for the source and use the server-generated id returned on creation.
+    source_operations: [openapi/bidmachine-io-placement-management-openapi.yml#updatePlacement]
+  - status: 409
+    title: Conflict
+    detail: Placement ID collision — the id is generated server-side from name and bundle, so an identical name+bundle on the same source collides.
+    remediation: Change the placement name (or bundle) so the derived id is unique.
+    source_operations: [openapi/bidmachine-io-placement-management-openapi.yml#createPlacement, openapi/bidmachine-io-placement-management-openapi.yml#updatePlacement]
+  - status: 429
+    title: Too Many Requests
+    detail: Reporting rate limit exceeded (6 requests per minute).
+    headers:
+      ad-exchange-warn-message: "Rate limit warning message. Example: You've been requesting too much. Please try again in 5 seconds."
+    remediation: Back off for the interval named in ad-exchange-warn-message; no Retry-After header is documented.
+    source_operations: [openapi/bidmachine-io-reporting-openapi.yml#retrieveSspReportData, openapi/bidmachine-io-reporting-openapi.yml#retrieveBidderReportData, openapi/bidmachine-io-reporting-openapi.yml#retrieveP2pRevenueReportData]
+related:
+  sdk_error_codes: errors/bidmachine-io-sdk-error-codes.yml
+  rate_limits: rate-limits/bidmachine-io-rate-limits.yml
+  conventions: conventions/bidmachine-io-conventions.yml

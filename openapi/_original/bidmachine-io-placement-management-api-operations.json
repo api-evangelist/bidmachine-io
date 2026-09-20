@@ -1,0 +1,998 @@
+{
+  "x-source": "https://developers.bidmachine.io/api/* \u2014 per-operation `api` props of docusaurus-plugin-openapi-docs, base64+zlib decoded verbatim on 2026-09-19",
+  "x-chunks": {
+    "get-access-token": "/assets/js/df0a2d13.3f1f8be8.js",
+    "list-placements": "/assets/js/3a17fe71.e3ef444b.js",
+    "create-placement": "/assets/js/bdf8d046.2c7e0688.js",
+    "update-placement": "/assets/js/3057b9cd.64a35254.js",
+    "delete-placement": "/assets/js/c3b973de.cc079ace.js"
+  },
+  "operations": {
+    "get-access-token": {
+      "description": "Returns a short-lived bearer token. Authenticate with HTTP Basic credentials \u2014 the same username and password used to log in to the dashboard. Use the returned token in all subsequent requests as `Authorization: Bearer <token>`.\n",
+      "security": [
+        {
+          "basicAuth": []
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response with a bearer token.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token": {
+                    "type": "string",
+                    "description": "Bearer token to use in subsequent requests.",
+                    "example": "eyJhbGci..."
+                  },
+                  "expires": {
+                    "type": "string",
+                    "format": "date-time",
+                    "description": "Token expiration time.",
+                    "example": "2026-07-11T10:00:00Z"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized \u2013 invalid or missing authentication credentials."
+        }
+      },
+      "method": "post",
+      "path": "/auth",
+      "servers": [
+        {
+          "url": "https://api-eu.bidmachine.io/api/v1"
+        }
+      ],
+      "securitySchemes": {
+        "basicAuth": {
+          "type": "http",
+          "scheme": "basic"
+        },
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      },
+      "info": {
+        "title": "BidMachine Placement Management API",
+        "version": "1.0.0",
+        "description": "This API lets publishers create, list, update, and delete placements on their ad sources programmatically \u2014 without using the BidMachine dashboard. Requirements:\n  - Bearer token authentication. Obtain a token via the __Get Access Token__ endpoint using\n    your dashboard __login and password__.\n  - All operations are scoped to sources owned by the authenticated publisher.\n    Requests for foreign sources return **403 Forbidden**.\nNote:\n  Tokens are short-lived. When a request returns **401 Unauthorized**, re-authenticate\n  and retry with a fresh token.\n"
+      },
+      "postman": {
+        "name": "Get Access Token",
+        "description": {
+          "content": "Returns a short-lived bearer token. Authenticate with HTTP Basic credentials \u2014 the same username and password used to log in to the dashboard. Use the returned token in all subsequent requests as `Authorization: Bearer <token>`.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "auth"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": []
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "auth": {
+          "type": "basic",
+          "basic": [
+            {
+              "type": "any",
+              "value": "{{basicAuthUsername}}",
+              "key": "username"
+            },
+            {
+              "type": "any",
+              "value": "{{basicAuthPassword}}",
+              "key": "password"
+            }
+          ]
+        }
+      }
+    },
+    "list-placements": {
+      "description": "Returns all placements for the given source.\n",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sourceId",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "ID of the ad source (app) the placements belong to."
+        }
+      ],
+      "responses": {
+        "200": {
+          "description": "Successful response with the list of placements.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "allOf": [
+                    {
+                      "type": "object",
+                      "required": [
+                        "id"
+                      ],
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "description": "Unique placement ID generated server-side on creation. Required for update and delete calls, and referenced in your SDK and mediation console setup.\n",
+                          "example": "dGVzdC1pZA"
+                        }
+                      }
+                    },
+                    {
+                      "type": "object",
+                      "required": [
+                        "name",
+                        "platform",
+                        "bundle",
+                        "adType",
+                        "placementType",
+                        "hva"
+                      ],
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "description": "Human-readable placement name.",
+                          "example": "Main Banner"
+                        },
+                        "platform": {
+                          "type": "string",
+                          "enum": [
+                            "android",
+                            "ios"
+                          ],
+                          "description": "Platform the placement is created for.",
+                          "example": "android"
+                        },
+                        "bundle": {
+                          "type": "string",
+                          "description": "App bundle ID. Android bundle name should be in the format `com.example.app`, while iOS bundle should be the numeric store ID (e.g. `123456789`).\n",
+                          "example": "com.example.app"
+                        },
+                        "adType": {
+                          "type": "string",
+                          "enum": [
+                            "banner",
+                            "interstitial",
+                            "rewarded",
+                            "native"
+                          ],
+                          "description": "Ad type of the placement.",
+                          "example": "banner"
+                        },
+                        "placementType": {
+                          "type": "string",
+                          "enum": [
+                            "bidding",
+                            "waterfall"
+                          ],
+                          "description": "Method of ad serving. Use `bidding` for real-time auction or `waterfall` for sequential requests by priority.\n",
+                          "example": "bidding"
+                        },
+                        "hva": {
+                          "type": "boolean",
+                          "description": "High-value audience flag.",
+                          "example": false
+                        },
+                        "pricefloor": {
+                          "type": "number",
+                          "format": "float",
+                          "description": "Minimum CPM in USD. Omit to set no floor.",
+                          "example": 0.5
+                        }
+                      },
+                      "title": "PlacementInput"
+                    }
+                  ],
+                  "title": "Placement"
+                }
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized \u2013 missing or expired bearer token."
+        },
+        "403": {
+          "description": "Forbidden \u2013 the authenticated publisher does not own the requested source."
+        }
+      },
+      "method": "get",
+      "path": "/publisher/sources/{sourceId}/placements",
+      "servers": [
+        {
+          "url": "https://api-eu.bidmachine.io/api/v1"
+        }
+      ],
+      "securitySchemes": {
+        "basicAuth": {
+          "type": "http",
+          "scheme": "basic"
+        },
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      },
+      "info": {
+        "title": "BidMachine Placement Management API",
+        "version": "1.0.0",
+        "description": "This API lets publishers create, list, update, and delete placements on their ad sources programmatically \u2014 without using the BidMachine dashboard. Requirements:\n  - Bearer token authentication. Obtain a token via the __Get Access Token__ endpoint using\n    your dashboard __login and password__.\n  - All operations are scoped to sources owned by the authenticated publisher.\n    Requests for foreign sources return **403 Forbidden**.\nNote:\n  Tokens are short-lived. When a request returns **401 Unauthorized**, re-authenticate\n  and retry with a fresh token.\n"
+      },
+      "postman": {
+        "name": "List Placements",
+        "description": {
+          "content": "Returns all placements for the given source.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "publisher",
+            "sources",
+            ":sourceId",
+            "placements"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": [
+            {
+              "disabled": false,
+              "description": {
+                "content": "(Required) ID of the ad source (app) the placements belong to.",
+                "type": "text/plain"
+              },
+              "type": "any",
+              "value": "",
+              "key": "sourceId"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "type": "any",
+              "value": "{{bearerToken}}",
+              "key": "token"
+            }
+          ]
+        }
+      }
+    },
+    "create-placement": {
+      "description": "Creates a new placement on the given source. The placement `id` is generated server-side from the `name` and `bundle` fields \u2014 store it, you will need it for update and delete calls.\n",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sourceId",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "ID of the ad source (app) the placements belong to."
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "platform",
+                "bundle",
+                "adType",
+                "placementType",
+                "hva"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Human-readable placement name.",
+                  "example": "Main Banner"
+                },
+                "platform": {
+                  "type": "string",
+                  "enum": [
+                    "android",
+                    "ios"
+                  ],
+                  "description": "Platform the placement is created for.",
+                  "example": "android"
+                },
+                "bundle": {
+                  "type": "string",
+                  "description": "App bundle ID. Android bundle name should be in the format `com.example.app`, while iOS bundle should be the numeric store ID (e.g. `123456789`).\n",
+                  "example": "com.example.app"
+                },
+                "adType": {
+                  "type": "string",
+                  "enum": [
+                    "banner",
+                    "interstitial",
+                    "rewarded",
+                    "native"
+                  ],
+                  "description": "Ad type of the placement.",
+                  "example": "banner"
+                },
+                "placementType": {
+                  "type": "string",
+                  "enum": [
+                    "bidding",
+                    "waterfall"
+                  ],
+                  "description": "Method of ad serving. Use `bidding` for real-time auction or `waterfall` for sequential requests by priority.\n",
+                  "example": "bidding"
+                },
+                "hva": {
+                  "type": "boolean",
+                  "description": "High-value audience flag.",
+                  "example": false
+                },
+                "pricefloor": {
+                  "type": "number",
+                  "format": "float",
+                  "description": "Minimum CPM in USD. Omit to set no floor.",
+                  "example": 0.5
+                }
+              },
+              "title": "PlacementInput"
+            }
+          }
+        }
+      },
+      "responses": {
+        "201": {
+          "description": "Placement created. Returns the created placement including its generated `id`.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "id"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Unique placement ID generated server-side on creation. Required for update and delete calls, and referenced in your SDK and mediation console setup.\n",
+                        "example": "dGVzdC1pZA"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "platform",
+                      "bundle",
+                      "adType",
+                      "placementType",
+                      "hva"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Human-readable placement name.",
+                        "example": "Main Banner"
+                      },
+                      "platform": {
+                        "type": "string",
+                        "enum": [
+                          "android",
+                          "ios"
+                        ],
+                        "description": "Platform the placement is created for.",
+                        "example": "android"
+                      },
+                      "bundle": {
+                        "type": "string",
+                        "description": "App bundle ID. Android bundle name should be in the format `com.example.app`, while iOS bundle should be the numeric store ID (e.g. `123456789`).\n",
+                        "example": "com.example.app"
+                      },
+                      "adType": {
+                        "type": "string",
+                        "enum": [
+                          "banner",
+                          "interstitial",
+                          "rewarded",
+                          "native"
+                        ],
+                        "description": "Ad type of the placement.",
+                        "example": "banner"
+                      },
+                      "placementType": {
+                        "type": "string",
+                        "enum": [
+                          "bidding",
+                          "waterfall"
+                        ],
+                        "description": "Method of ad serving. Use `bidding` for real-time auction or `waterfall` for sequential requests by priority.\n",
+                        "example": "bidding"
+                      },
+                      "hva": {
+                        "type": "boolean",
+                        "description": "High-value audience flag.",
+                        "example": false
+                      },
+                      "pricefloor": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Minimum CPM in USD. Omit to set no floor.",
+                        "example": 0.5
+                      }
+                    },
+                    "title": "PlacementInput"
+                  }
+                ],
+                "title": "Placement"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized \u2013 missing or expired bearer token."
+        },
+        "403": {
+          "description": "Forbidden \u2013 the authenticated publisher does not own the requested source."
+        },
+        "409": {
+          "description": "Conflict \u2013 placement ID collision."
+        }
+      },
+      "method": "post",
+      "path": "/publisher/sources/{sourceId}/placements",
+      "servers": [
+        {
+          "url": "https://api-eu.bidmachine.io/api/v1"
+        }
+      ],
+      "securitySchemes": {
+        "basicAuth": {
+          "type": "http",
+          "scheme": "basic"
+        },
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      },
+      "jsonRequestBodyExample": {
+        "name": "Main Banner",
+        "platform": "android",
+        "bundle": "com.example.app",
+        "adType": "banner",
+        "placementType": "bidding",
+        "hva": false,
+        "pricefloor": 0.5
+      },
+      "info": {
+        "title": "BidMachine Placement Management API",
+        "version": "1.0.0",
+        "description": "This API lets publishers create, list, update, and delete placements on their ad sources programmatically \u2014 without using the BidMachine dashboard. Requirements:\n  - Bearer token authentication. Obtain a token via the __Get Access Token__ endpoint using\n    your dashboard __login and password__.\n  - All operations are scoped to sources owned by the authenticated publisher.\n    Requests for foreign sources return **403 Forbidden**.\nNote:\n  Tokens are short-lived. When a request returns **401 Unauthorized**, re-authenticate\n  and retry with a fresh token.\n"
+      },
+      "postman": {
+        "name": "Create Placement",
+        "description": {
+          "content": "Creates a new placement on the given source. The placement `id` is generated server-side from the `name` and `bundle` fields \u2014 store it, you will need it for update and delete calls.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "publisher",
+            "sources",
+            ":sourceId",
+            "placements"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": [
+            {
+              "disabled": false,
+              "description": {
+                "content": "(Required) ID of the ad source (app) the placements belong to.",
+                "type": "text/plain"
+              },
+              "type": "any",
+              "value": "",
+              "key": "sourceId"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "POST",
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "type": "any",
+              "value": "{{bearerToken}}",
+              "key": "token"
+            }
+          ]
+        }
+      }
+    },
+    "update-placement": {
+      "description": "Updates an existing placement. Send the full placement object including its `id` \u2014 all fields are replaced.\n",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sourceId",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "ID of the ad source (app) the placements belong to."
+        }
+      ],
+      "requestBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "allOf": [
+                {
+                  "type": "object",
+                  "required": [
+                    "id"
+                  ],
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "description": "Unique placement ID generated server-side on creation. Required for update and delete calls, and referenced in your SDK and mediation console setup.\n",
+                      "example": "dGVzdC1pZA"
+                    }
+                  }
+                },
+                {
+                  "type": "object",
+                  "required": [
+                    "name",
+                    "platform",
+                    "bundle",
+                    "adType",
+                    "placementType",
+                    "hva"
+                  ],
+                  "properties": {
+                    "name": {
+                      "type": "string",
+                      "description": "Human-readable placement name.",
+                      "example": "Main Banner"
+                    },
+                    "platform": {
+                      "type": "string",
+                      "enum": [
+                        "android",
+                        "ios"
+                      ],
+                      "description": "Platform the placement is created for.",
+                      "example": "android"
+                    },
+                    "bundle": {
+                      "type": "string",
+                      "description": "App bundle ID. Android bundle name should be in the format `com.example.app`, while iOS bundle should be the numeric store ID (e.g. `123456789`).\n",
+                      "example": "com.example.app"
+                    },
+                    "adType": {
+                      "type": "string",
+                      "enum": [
+                        "banner",
+                        "interstitial",
+                        "rewarded",
+                        "native"
+                      ],
+                      "description": "Ad type of the placement.",
+                      "example": "banner"
+                    },
+                    "placementType": {
+                      "type": "string",
+                      "enum": [
+                        "bidding",
+                        "waterfall"
+                      ],
+                      "description": "Method of ad serving. Use `bidding` for real-time auction or `waterfall` for sequential requests by priority.\n",
+                      "example": "bidding"
+                    },
+                    "hva": {
+                      "type": "boolean",
+                      "description": "High-value audience flag.",
+                      "example": false
+                    },
+                    "pricefloor": {
+                      "type": "number",
+                      "format": "float",
+                      "description": "Minimum CPM in USD. Omit to set no floor.",
+                      "example": 0.5
+                    }
+                  },
+                  "title": "PlacementInput"
+                }
+              ],
+              "title": "Placement"
+            }
+          }
+        }
+      },
+      "responses": {
+        "200": {
+          "description": "Placement updated. Returns the updated placement.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "allOf": [
+                  {
+                    "type": "object",
+                    "required": [
+                      "id"
+                    ],
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "description": "Unique placement ID generated server-side on creation. Required for update and delete calls, and referenced in your SDK and mediation console setup.\n",
+                        "example": "dGVzdC1pZA"
+                      }
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "required": [
+                      "name",
+                      "platform",
+                      "bundle",
+                      "adType",
+                      "placementType",
+                      "hva"
+                    ],
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Human-readable placement name.",
+                        "example": "Main Banner"
+                      },
+                      "platform": {
+                        "type": "string",
+                        "enum": [
+                          "android",
+                          "ios"
+                        ],
+                        "description": "Platform the placement is created for.",
+                        "example": "android"
+                      },
+                      "bundle": {
+                        "type": "string",
+                        "description": "App bundle ID. Android bundle name should be in the format `com.example.app`, while iOS bundle should be the numeric store ID (e.g. `123456789`).\n",
+                        "example": "com.example.app"
+                      },
+                      "adType": {
+                        "type": "string",
+                        "enum": [
+                          "banner",
+                          "interstitial",
+                          "rewarded",
+                          "native"
+                        ],
+                        "description": "Ad type of the placement.",
+                        "example": "banner"
+                      },
+                      "placementType": {
+                        "type": "string",
+                        "enum": [
+                          "bidding",
+                          "waterfall"
+                        ],
+                        "description": "Method of ad serving. Use `bidding` for real-time auction or `waterfall` for sequential requests by priority.\n",
+                        "example": "bidding"
+                      },
+                      "hva": {
+                        "type": "boolean",
+                        "description": "High-value audience flag.",
+                        "example": false
+                      },
+                      "pricefloor": {
+                        "type": "number",
+                        "format": "float",
+                        "description": "Minimum CPM in USD. Omit to set no floor.",
+                        "example": 0.5
+                      }
+                    },
+                    "title": "PlacementInput"
+                  }
+                ],
+                "title": "Placement"
+              }
+            }
+          }
+        },
+        "401": {
+          "description": "Unauthorized \u2013 missing or expired bearer token."
+        },
+        "403": {
+          "description": "Forbidden \u2013 the authenticated publisher does not own the requested source."
+        },
+        "404": {
+          "description": "Not Found \u2013 no placement with that `id` exists on the given source."
+        },
+        "409": {
+          "description": "Conflict \u2013 placement ID collision."
+        }
+      },
+      "method": "put",
+      "path": "/publisher/sources/{sourceId}/placements",
+      "servers": [
+        {
+          "url": "https://api-eu.bidmachine.io/api/v1"
+        }
+      ],
+      "securitySchemes": {
+        "basicAuth": {
+          "type": "http",
+          "scheme": "basic"
+        },
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      },
+      "jsonRequestBodyExample": {
+        "id": "dGVzdC1pZA",
+        "name": "Main Banner",
+        "platform": "android",
+        "bundle": "com.example.app",
+        "adType": "banner",
+        "placementType": "bidding",
+        "hva": false,
+        "pricefloor": 0.5
+      },
+      "info": {
+        "title": "BidMachine Placement Management API",
+        "version": "1.0.0",
+        "description": "This API lets publishers create, list, update, and delete placements on their ad sources programmatically \u2014 without using the BidMachine dashboard. Requirements:\n  - Bearer token authentication. Obtain a token via the __Get Access Token__ endpoint using\n    your dashboard __login and password__.\n  - All operations are scoped to sources owned by the authenticated publisher.\n    Requests for foreign sources return **403 Forbidden**.\nNote:\n  Tokens are short-lived. When a request returns **401 Unauthorized**, re-authenticate\n  and retry with a fresh token.\n"
+      },
+      "postman": {
+        "name": "Update Placement",
+        "description": {
+          "content": "Updates an existing placement. Send the full placement object including its `id` \u2014 all fields are replaced.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "publisher",
+            "sources",
+            ":sourceId",
+            "placements"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": [
+            {
+              "disabled": false,
+              "description": {
+                "content": "(Required) ID of the ad source (app) the placements belong to.",
+                "type": "text/plain"
+              },
+              "type": "any",
+              "value": "",
+              "key": "sourceId"
+            }
+          ]
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "method": "PUT",
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "type": "any",
+              "value": "{{bearerToken}}",
+              "key": "token"
+            }
+          ]
+        }
+      }
+    },
+    "delete-placement": {
+      "description": "Deletes the placement with the given `id` from the source.\n",
+      "security": [
+        {
+          "bearerAuth": []
+        }
+      ],
+      "parameters": [
+        {
+          "in": "path",
+          "name": "sourceId",
+          "required": true,
+          "schema": {
+            "type": "integer"
+          },
+          "description": "ID of the ad source (app) the placements belong to."
+        },
+        {
+          "in": "path",
+          "name": "id",
+          "required": true,
+          "schema": {
+            "type": "string"
+          },
+          "description": "Placement ID returned by the create call."
+        }
+      ],
+      "responses": {
+        "204": {
+          "description": "Placement deleted, no body."
+        },
+        "401": {
+          "description": "Unauthorized \u2013 missing or expired bearer token."
+        },
+        "403": {
+          "description": "Forbidden \u2013 the authenticated publisher does not own the requested source."
+        }
+      },
+      "method": "delete",
+      "path": "/publisher/sources/{sourceId}/placements/{id}",
+      "servers": [
+        {
+          "url": "https://api-eu.bidmachine.io/api/v1"
+        }
+      ],
+      "securitySchemes": {
+        "basicAuth": {
+          "type": "http",
+          "scheme": "basic"
+        },
+        "bearerAuth": {
+          "type": "http",
+          "scheme": "bearer"
+        }
+      },
+      "info": {
+        "title": "BidMachine Placement Management API",
+        "version": "1.0.0",
+        "description": "This API lets publishers create, list, update, and delete placements on their ad sources programmatically \u2014 without using the BidMachine dashboard. Requirements:\n  - Bearer token authentication. Obtain a token via the __Get Access Token__ endpoint using\n    your dashboard __login and password__.\n  - All operations are scoped to sources owned by the authenticated publisher.\n    Requests for foreign sources return **403 Forbidden**.\nNote:\n  Tokens are short-lived. When a request returns **401 Unauthorized**, re-authenticate\n  and retry with a fresh token.\n"
+      },
+      "postman": {
+        "name": "Delete Placement",
+        "description": {
+          "content": "Deletes the placement with the given `id` from the source.\n",
+          "type": "text/plain"
+        },
+        "url": {
+          "path": [
+            "publisher",
+            "sources",
+            ":sourceId",
+            "placements",
+            ":id"
+          ],
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "query": [],
+          "variable": [
+            {
+              "disabled": false,
+              "description": {
+                "content": "(Required) ID of the ad source (app) the placements belong to.",
+                "type": "text/plain"
+              },
+              "type": "any",
+              "value": "",
+              "key": "sourceId"
+            },
+            {
+              "disabled": false,
+              "description": {
+                "content": "(Required) Placement ID returned by the create call.",
+                "type": "text/plain"
+              },
+              "type": "any",
+              "value": "",
+              "key": "id"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "type": "any",
+              "value": "{{bearerToken}}",
+              "key": "token"
+            }
+          ]
+        }
+      }
+    }
+  }
+}
