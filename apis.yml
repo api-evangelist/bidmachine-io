@@ -24,7 +24,23 @@ x-website-note: >-
 specificationVersion: '0.20'
 created: '2026-09-19'
 modified: '2026-09-19'
+x-docs-platform: docusaurus
+x-docs-platform-confidence: medium
+x-docs-platform-checked: 2026-09-20
 tags:
+  - Advertising
+  - AdTech
+  - Mobile Advertising
+  - Ad Exchange
+  - Ad Mediation
+  - In-App Bidding
+  - OpenRTB
+  - App Monetization
+  - Programmatic Advertising
+  - Mobile SDK
+  - Reporting
+  - Company
+tags_raw:
   - Advertising
   - Ad Tech
   - Mobile Advertising
