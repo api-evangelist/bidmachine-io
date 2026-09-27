@@ -1,0 +1,219 @@
+openapi: 3.2.0
+info:
+  title: BidMachine Placement Management Placements API
+  version: 1.0.0
+  description: This API lets publishers create, list, update, and delete placements on their ad sources programmatically — without using the BidMachine dashboard.
+  x-apievangelist:
+    source: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+    method: searched
+    harvested: '2026-09-19'
+    note: 'Assembled from the provider''s own compiled OpenAPI operation objects embedded in developers.bidmachine.io (docusaurus-plugin-openapi-docs). Every path, parameter, schema, response and security scheme is the provider''s; operationId, tags and summary were added by API Evangelist (see overlays/). Verbatim decoded objects: openapi/_original/.'
+servers:
+- url: https://api-eu.bidmachine.io/api/v1
+tags:
+- name: Placements
+paths:
+  /publisher/sources/{sourceId}/placements:
+    get:
+      operationId: listPlacements
+      summary: List Placements
+      description: Returns all placements for the given source.
+      tags:
+      - Placements
+      parameters:
+      - in: path
+        name: sourceId
+        required: true
+        schema:
+          type: integer
+        description: ID of the ad source (app) the placements belong to.
+      responses:
+        '200':
+          description: Successful response with the list of placements.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Placement'
+        '401':
+          description: Unauthorized – missing or expired bearer token.
+        '403':
+          description: Forbidden – the authenticated publisher does not own the requested source.
+      security:
+      - bearerAuth: []
+    post:
+      operationId: createPlacement
+      summary: Create Placement
+      description: Creates a new placement on the given source. The placement `id` is generated server-side from the `name` and `bundle` fields — store it, you will need it for update and delete calls.
+      tags:
+      - Placements
+      parameters:
+      - in: path
+        name: sourceId
+        required: true
+        schema:
+          type: integer
+        description: ID of the ad source (app) the placements belong to.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PlacementInput'
+      responses:
+        '201':
+          description: Placement created. Returns the created placement including its generated `id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placement'
+        '401':
+          description: Unauthorized – missing or expired bearer token.
+        '403':
+          description: Forbidden – the authenticated publisher does not own the requested source.
+        '409':
+          description: Conflict – placement ID collision.
+      security:
+      - bearerAuth: []
+    put:
+      operationId: updatePlacement
+      summary: Update Placement
+      description: Updates an existing placement. Send the full placement object including its `id` — all fields are replaced.
+      tags:
+      - Placements
+      parameters:
+      - in: path
+        name: sourceId
+        required: true
+        schema:
+          type: integer
+        description: ID of the ad source (app) the placements belong to.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Placement'
+      responses:
+        '200':
+          description: Placement updated. Returns the updated placement.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Placement'
+        '401':
+          description: Unauthorized – missing or expired bearer token.
+        '403':
+          description: Forbidden – the authenticated publisher does not own the requested source.
+        '404':
+          description: Not Found – no placement with that `id` exists on the given source.
+        '409':
+          description: Conflict – placement ID collision.
+      security:
+      - bearerAuth: []
+  /publisher/sources/{sourceId}/placements/{id}:
+    delete:
+      operationId: deletePlacement
+      summary: Delete Placement
+      description: Deletes the placement with the given `id` from the source.
+      tags:
+      - Placements
+      parameters:
+      - in: path
+        name: sourceId
+        required: true
+        schema:
+          type: integer
+        description: ID of the ad source (app) the placements belong to.
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+        description: Placement ID returned by the create call.
+      responses:
+        '204':
+          description: Placement deleted, no body.
+        '401':
+          description: Unauthorized – missing or expired bearer token.
+        '403':
+          description: Forbidden – the authenticated publisher does not own the requested source.
+      security:
+      - bearerAuth: []
+components:
+  schemas:
+    Placement:
+      allOf:
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            description: 'Unique placement ID generated server-side on creation. Required for update and delete calls, and referenced in your SDK and mediation console setup.
+
+              '
+            example: dGVzdC1pZA
+      - $ref: '#/components/schemas/PlacementInput'
+    PlacementInput:
+      type: object
+      required:
+      - name
+      - platform
+      - bundle
+      - adType
+      - placementType
+      - hva
+      properties:
+        name:
+          type: string
+          description: Human-readable placement name.
+          example: Main Banner
+        platform:
+          type: string
+          enum:
+          - android
+          - ios
+          description: Platform the placement is created for.
+          example: android
+        bundle:
+          type: string
+          description: 'App bundle ID. Android bundle name should be in the format `com.example.app`, while iOS bundle should be the numeric store ID (e.g. `123456789`).
+
+            '
+          example: com.example.app
+        adType:
+          type: string
+          enum:
+          - banner
+          - interstitial
+          - rewarded
+          - native
+          description: Ad type of the placement.
+          example: banner
+        placementType:
+          type: string
+          enum:
+          - bidding
+          - waterfall
+          description: 'Method of ad serving. Use `bidding` for real-time auction or `waterfall` for sequential requests by priority.
+
+            '
+          example: bidding
+        hva:
+          type: boolean
+          description: High-value audience flag.
+          example: false
+        pricefloor:
+          type: number
+          format: float
+          description: Minimum CPM in USD. Omit to set no floor.
+          example: 0.5
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer

@@ -1,0 +1,25 @@
+{
+  "provider": "bidmachine-io",
+  "sources": [
+    "bidmachine-io-placement-management-openapi.yml",
+    "bidmachine-io-reporting-openapi.yml"
+  ],
+  "outputs": [
+    "bidmachine-io-authentication-api-openapi.yml",
+    "bidmachine-io-placements-api-openapi.yml",
+    "bidmachine-io-reporting-api-openapi.yml"
+  ],
+  "archived": [
+    "archived openapi/bidmachine-io-placement-management-openapi.yml",
+    "archived openapi/bidmachine-io-reporting-openapi.yml"
+  ],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (0 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "bidmachine-io-placement-management-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "bidmachine-io-reporting-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: written (+3 apis, 4 total)"
+  ],
+  "skipped": []
+}

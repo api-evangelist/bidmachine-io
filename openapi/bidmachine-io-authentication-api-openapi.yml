@@ -1,0 +1,51 @@
+openapi: 3.2.0
+info:
+  title: BidMachine Placement Management Authentication API
+  version: 1.0.0
+  description: This API lets publishers create, list, update, and delete placements on their ad sources programmatically — without using the BidMachine dashboard.
+  x-apievangelist:
+    source: https://developers.bidmachine.io/api/bidmachine-placement-management-api
+    method: searched
+    harvested: '2026-09-19'
+    note: 'Assembled from the provider''s own compiled OpenAPI operation objects embedded in developers.bidmachine.io (docusaurus-plugin-openapi-docs). Every path, parameter, schema, response and security scheme is the provider''s; operationId, tags and summary were added by API Evangelist (see overlays/). Verbatim decoded objects: openapi/_original/.'
+servers:
+- url: https://api-eu.bidmachine.io/api/v1
+tags:
+- name: Authentication
+paths:
+  /auth:
+    post:
+      operationId: getAccessToken
+      summary: Get Access Token
+      description: 'Returns a short-lived bearer token. Authenticate with HTTP Basic credentials — the same username and password used to log in to the dashboard. Use the returned token in all subsequent requests as `Authorization: Bearer `.'
+      tags:
+      - Authentication
+      responses:
+        '200':
+          description: Successful response with a bearer token.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: Bearer token to use in subsequent requests.
+                    example: eyJhbGci...
+                  expires:
+                    type: string
+                    format: date-time
+                    description: Token expiration time.
+                    example: '2026-07-11T10:00:00Z'
+        '401':
+          description: Unauthorized – invalid or missing authentication credentials.
+      security:
+      - basicAuth: []
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+    bearerAuth:
+      type: http
+      scheme: bearer
