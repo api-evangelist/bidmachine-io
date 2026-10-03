@@ -143,19 +143,6 @@ paths:
       - bearerAuth: []
 components:
   schemas:
-    Placement:
-      allOf:
-      - type: object
-        required:
-        - id
-        properties:
-          id:
-            type: string
-            description: 'Unique placement ID generated server-side on creation. Required for update and delete calls, and referenced in your SDK and mediation console setup.
-
-              '
-            example: dGVzdC1pZA
-      - $ref: '#/components/schemas/PlacementInput'
     PlacementInput:
       type: object
       required:
@@ -210,6 +197,19 @@ components:
           format: float
           description: Minimum CPM in USD. Omit to set no floor.
           example: 0.5
+    Placement:
+      allOf:
+      - type: object
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            description: 'Unique placement ID generated server-side on creation. Required for update and delete calls, and referenced in your SDK and mediation console setup.
+
+              '
+            example: dGVzdC1pZA
+      - $ref: '#/components/schemas/PlacementInput'
   securitySchemes:
     basicAuth:
       type: http
