@@ -1,6 +1,7 @@
 generated: '2026-10-14'
 method: searched
 checked:
+- https://a2aregistry.org/api/agents
 - https://vendor-list.consensu.org/v3/vendor-list.json
 marketplace_apps: []
 edges:
@@ -41,3 +42,41 @@ edges:
     detected: '2026-10-14'
   detected_by: sweep-adtech.py
   detected: '2026-10-14'
+- partner_name: a2aregistry.org
+  partner: null
+  partner_match: register
+  type: register
+  direction: partner-built
+  category: A2A agent registry
+  evidence: https://a2aregistry.org/api/agents/26dc4116-501f-4ed7-a31d-e20b3fa253e9
+  channel: standard-directory
+  relationship: compatible
+  shape: a2a
+  evidence_kind: register-listing
+  degree: listed
+  report_only: true
+  a2a_register:
+    hosts:
+    - bidmachine.io
+    conformance: true
+    task_conformance_working: false
+    healthy: true
+    signal_note: booleans over the provider's hosts; listings are context, never read
+  contract_reference:
+    register: a2aregistry.org /api/agents
+    spec_file: null
+    standard: A2A
+    role: a2a-registry-listing
+    registered_name: BidMachine
+    matched_domain: bidmachine.io
+    matched_by: domain
+    matched_via: card-host
+    listings_context: 1
+    sample_agents:
+    - BidMachine Ad Exchange
+    detected_by: sweep-ai-agents.py
+    detected: '2026-10-15'
+  detected_by: sweep-ai-agents.py
+  first_seen: '2026-10-15'
+source:
+- https://a2aregistry.org/api/agents
