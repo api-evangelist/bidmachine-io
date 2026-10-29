@@ -64,14 +64,140 @@
 > Full detail: **[Where this data comes from](https://apievangelist.com/about/where-our-data-comes-from)**
 <!-- API-EVANGELIST-PROVENANCE:END -->
 
-BidMachine is a mobile in-app ad exchange and monetization platform (BidMachine, Inc.) that sells publishers' mobile inventory to demand partners through real-time OpenRTB 2.5 auctions, integrated through the BidMachine SDK (Android, iOS, Unity), the BidMachine Plus mediation SDK, or bidding adapters for AppLovin MAX, Unity LevelPlay, AdMob/GAM and TopOn.
+BidMachine is a mobile in-app ad exchange and monetization platform (BidMachine, Inc., McLean, Virginia; spun out of the Appodeal/Stack group) that sells publishers' mobile inventory to demand partners through real-time OpenRTB 2.5 auctions. Publishers integrate the BidMachine SDK (Android, iOS, Unity) or the newer unified BidMachine Plus mediation SDK, or plug BidMachine into AppLovin MAX, Unity LevelPlay, AdMob/GAM or TopOn as a bidding adapter; DSPs and agencies buy through the exchange. Its public APIs are a Placement Management API (create, list, update and delete placements on an ad source with a short-lived bearer token) and a Reporting API (SSP, bidder and P2P revenue reports as NDJSON or CSV over HTTP Basic), both documented as OpenAPI on developers.bidmachine.io, plus the OpenRTB auction endpoints (api-eu / api-us / api-apac) for in-house bidders and supply partners.
 
-Public API surface profiled here:
+**Areas:** Advertising · AdTech · Mobile Advertising · Ad Exchange · Ad Mediation · In-App Bidding · OpenRTB · App Monetization · Programmatic Advertising · Mobile SDK · Reporting · Company
 
-- **Placement Management API** — create, list, update and delete placements on an ad source with a short-lived bearer token ([reference](https://developers.bidmachine.io/api/bidmachine-placement-management-api), [OpenAPI](openapi/bidmachine-io-placement-management-openapi.yml))
-- **Reporting API** — SSP, bidder and P2P revenue reports as NDJSON or CSV over HTTP Basic ([reference](https://developers.bidmachine.io/api/bidmachine-reporting-api), [OpenAPI](openapi/bidmachine-io-reporting-openapi.yml))
-- **OpenRTB Auction API** — regional bid endpoints for in-house bidders and supply partners ([spec](https://developers.bidmachine.io/sdk/general/bidder))
-- Provider-published **Agent Skills** for the BidMachine Plus SDK, saved verbatim under [skills/](skills/) from [bidmachine/bidmachine-sdk-agents](https://github.com/bidmachine/bidmachine-sdk-agents) (Apache-2.0)
+## BidMachine on APIs.io
 
-Links: [website](https://bidmachine.io/) · [developer portal](https://developers.bidmachine.io/) · [status](https://bidmachine.statuspage.io/) · [GitHub](https://github.com/bidmachine)
+Everything profiled for BidMachine is published on APIs.io rather than in this repository. Start at the provider page — **[apis.io/providers/bidmachine-io/](https://apis.io/providers/bidmachine-io/)** — or go straight to one of the APIs or properties below.
 
+### APIs (4)
+
+- [BidMachine OpenRTB Auction API](https://apis.io/apis/bidmachine-io/bidmachine-openrtb-auction-api/) — OpenRTB 2.5 bid endpoint for in-house bidders and supply partners integrating through the BidMachine SDK: one impression per bid request, first-price…
+- [BidMachine Authentication API](https://apis.io/apis/bidmachine-io/bidmachine-io-authentication-api/) — The Authentication API from BidMachine — 1 operation(s) for authentication.
+- [BidMachine Placements API](https://apis.io/apis/bidmachine-io/bidmachine-io-placements-api/) — The Placements API from BidMachine — 2 operation(s) for placements.
+- [BidMachine Reporting API](https://apis.io/apis/bidmachine-io/bidmachine-io-reporting-api/) — The Reporting API from BidMachine — 3 operation(s) for reporting.
+
+### Published properties
+
+Each property below is a page on APIs.io carrying the machine-readable artifact and what it says.
+
+#### MCP servers (1)
+
+Model Context Protocol servers that expose the API to agents.
+
+- [bidmachine (candidate)](https://apis.io/servers/bidmachine-io/bidmachine-candidate/)
+
+#### Agent skills (3)
+
+Agent skills built on the API.
+
+- [bidmachine-android](https://apis.io/agent-skills/bidmachine-io/bidmachine-android/)
+- [bidmachine-ios](https://apis.io/agent-skills/bidmachine-io/bidmachine-ios/)
+- [bidmachine-unity](https://apis.io/agent-skills/bidmachine-io/bidmachine-unity/)
+
+#### Agentic access (1)
+
+Which operations an agent can call, which act, and which need a human in the loop.
+
+- [Bidmachine Io Agentic Access](https://apis.io/agentic-access/bidmachine-io/bidmachine-io-agentic-access/)
+
+#### Overlays (2)
+
+OpenAPI overlays, including conversational phrasing for each operation.
+
+- [Bidmachine Io Placement Management Overlay](https://apis.io/overlays/bidmachine-io/bidmachine-io-placement-management-overlay/)
+- [Bidmachine Io Reporting Overlay](https://apis.io/overlays/bidmachine-io/bidmachine-io-reporting-overlay/)
+
+#### Security (3)
+
+Authentication, trust centre, and vulnerability disclosure.
+
+- [Bidmachine Io Authentication](https://apis.io/security/bidmachine-io/bidmachine-io-authentication/)
+- [Bidmachine Io Domain Security](https://apis.io/security/bidmachine-io/bidmachine-io-domain-security/)
+- [Bidmachine Io Vulnerability Disclosure](https://apis.io/security/bidmachine-io/bidmachine-io-vulnerability-disclosure/)
+
+#### Plans and pricing (1)
+
+Published plans, tiers and prices.
+
+- [Bidmachine Io Plans Pricing](https://apis.io/plans/bidmachine-io/bidmachine-io-plans-pricing/)
+
+#### Rate limits (1)
+
+Published request limits.
+
+- [Bidmachine Io Rate Limits](https://apis.io/rate-limits/bidmachine-io/bidmachine-io-rate-limits/)
+
+## Where to find this API
+
+Links to the company's own pages. This repository publishes no copy of their specifications — the canonical document is theirs and lives at the URLs below.
+
+- [Website](https://bidmachine.io/)
+- [Documentation](https://developers.bidmachine.io/)
+- [Getting started](https://developers.bidmachine.io/sdk/overview)
+- [API reference](https://developers.bidmachine.io/api/bidmachine-placement-management-api)
+- [Sign up](https://www.bidmachine.com/sign-up)
+- [Changelog](https://developers.bidmachine.io/sdk/general/android/android-changelog)
+- [Blog](https://www.bidmachine.com/blog)
+- [Security](https://www.bidmachine.com/responsible-vulnerability-disclosure-policy)
+- [Terms of service](https://www.bidmachine.com/terms-of-service)
+- [Privacy policy](https://www.bidmachine.com/privacy-policy)
+- [GitHub](https://github.com/bidmachine)
+- [Status](https://bidmachine.statuspage.io/)
+
+## API Evangelist rating
+
+**Kin Score 56.4** — strong · rubric 0.25.0 · scored 2026-10-23
+
+| Facet | Score |
+|---|---|
+| Discoverability | 80.4 |
+| Contract quality | 49.4 |
+| Contract governance | 18.2 |
+| Operational transparency | 68.4 |
+| Developer ergonomics | 73.8 |
+| Access clarity | 34.2 |
+
+**Agent readiness 31.6** — agent-ready
+
+| Agent-readiness dimension | Result |
+|---|---|
+| Spec Presence | yes |
+| Agentic Access | derived (partial credit) |
+| Reversibility Documented | — |
+| MCP Server | — |
+| Auth Clarity | bearer (partial credit) |
+| Idempotency | — |
+| Error Semantics | documented (partial credit) |
+| OpenAPI Examples | verified |
+| Rate Limit Signal | documented (partial credit) |
+| Event Surface Described | — |
+| Agent Skills | yes |
+| Well Known Catalog | — |
+| Consent Identity | — |
+| Agent Card | — |
+| Dry Run Mode | — |
+| Delegated Identity | — |
+| Protected Resource Metadata | — |
+| Dynamic Client Registration | — |
+| Agentic Commerce | — |
+| Pagination Ratio | — |
+| Operation Distinctiveness | distinct |
+
+**Regulatory alignment 42.2** — Horizontal (data, software, accessibility, platform)
+
+The rubric is published at [github.com/api-evangelist/kin-score](https://github.com/api-evangelist/kin-score). The per-check breakdown behind these numbers — which checks were earned, partial or missed — along with score history and how this provider compares to its peers, is available at [apis.io/providers/bidmachine-io/](https://apis.io/providers/bidmachine-io/).
+
+## How this profile is made
+
+API Evangelist profiles a company's public API surface the way a developer would find it: the website, developer portal and documentation, the specifications it publishes, its public repositories, and its pricing, status and changelog pages. From that it derives the properties above — contracts split per API, workflows, schemas, collections, governance rules, plans and rate limits — and scores them against the published [Kin Score rubric](https://github.com/api-evangelist/kin-score).
+
+The artifacts are published on [APIs.io](https://apis.io), not in this repository. This repository is the public record for BidMachine: the place to say something is wrong, missing or out of date, and to ask for a re-score or a removal.
+
+## Open an issue
+
+- **Something about this listing** — a wrong description, a missing API, a stale artifact or a question about the rating: [open an issue on this repository](https://github.com/api-evangelist/bidmachine-io/issues/new).
+- **A new API, or one that is not in the catalog yet** — [submit it on APIs.io](https://apis.io/add/).
+- **Anything else** — [the APIs.io inbox](https://github.com/api-search/inbox/issues/new) or [info@apievangelist.com](mailto:info@apievangelist.com).
